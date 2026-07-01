@@ -31,6 +31,6 @@ exports/
 - `workflows/alert-triage.json` — story 121670
 - `workflows/alert-triage-advanced.json` — story 121679
 
-Full strategy: [notes/05-workflow-catalog-and-ce-strategy.md](../notes/05-workflow-catalog-and-ce-strategy.md)
+Full strategy: [docs/explanation/ce-operating-model.md](../docs/explanation/ce-operating-model.md) · Catalog: [docs/reference/workflow-catalog.md](../docs/reference/workflow-catalog.md)
 
 Check budget: `./scripts/ce-flow-status.sh`

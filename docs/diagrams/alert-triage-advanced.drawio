@@ -1,0 +1,53 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Alert Triage Advanced" id="alert-triage-advanced">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="650" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="w" value="receive_alert" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="280" width="100" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="n" value="normalize_alert" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="170" y="280" width="110" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s" value="check_severity" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="310" y="265" width="100" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="cr" value="check_critical" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="460" y="120" width="100" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="p0" value="critical_escalate P0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="610" y="80" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="p1" value="escalate_alert P1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="610" y="180" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="en" value="enrich_critical HTTP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="780" y="80" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="eh" value="enrich_high HTTP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="780" y="180" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="src" value="check_source" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="460" y="400" width="100" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="fw" value="firewall_log" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="610" y="380" width="110" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg" value="log_alert P4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="610" y="460" width="110" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="ea1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6c8ebf;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="w" target="n"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ea2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6c8ebf;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n" target="s"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ea3" value="match" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6c8ebf;strokeWidth=2;endArrow=block;html=1;" edge="1" parent="1" source="s" target="cr"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ea4" value="no match" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6c8ebf;strokeWidth=2;endArrow=block;html=1;" edge="1" parent="1" source="s" target="src"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ea5" value="critical" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#b85450;strokeWidth=2;endArrow=block;html=1;" edge="1" parent="1" source="cr" target="p0"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ea6" value="high" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#b85450;strokeWidth=2;endArrow=block;html=1;" edge="1" parent="1" source="cr" target="p1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ea7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6c8ebf;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="p0" target="en"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ea8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6c8ebf;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="p1" target="eh"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ea9" value="firewall" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#82b366;strokeWidth=2;endArrow=block;html=1;" edge="1" parent="1" source="src" target="fw"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ea10" value="else" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#82b366;strokeWidth=2;endArrow=block;html=1;" edge="1" parent="1" source="src" target="lg"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
