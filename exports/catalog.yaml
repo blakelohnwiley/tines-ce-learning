@@ -1,0 +1,135 @@
+# Local workflow library index
+# Update when you export/import stories. Do not commit secrets.
+
+workflows:
+  - id: alert-triage
+    name: Your first story
+    file: workflows/alert-triage.json
+    tenant_story_id: 121670
+    flows: 1
+    webhook_env: WEBHOOK_URL
+    webhook_path: your-first-story
+    test_script: scripts/test-both-branches.sh
+    status: active
+
+  - id: alert-triage-advanced
+    name: Alert Triage Advanced
+    file: workflows/alert-triage-advanced.json
+    tenant_story_id: 121679
+    flows: 1
+    webhook_env: WEBHOOK_URL_ADVANCED
+    webhook_path: alert-triage-advanced
+    test_script: scripts/test-advanced-branches.sh
+    status: active
+
+  - id: scheduled-heartbeat
+    name: Scheduled Heartbeat
+    file: workflows/scheduled-heartbeat.json
+    tenant_story_id: 121683
+    flows: 1
+    webhook_env: null
+    trigger: schedule
+    schedule: "*/15 * * * *"
+    notes: "Schedule trigger via cron; Workbench used HTTP GET to httpbin as entry — re-import and enable to run."
+    status: exported-only
+
+  - id: ip-enrichment
+    name: IP Enrichment
+    file: workflows/ip-enrichment.json
+    tenant_story_id: 121684
+    flows: 1
+    webhook_env: WEBHOOK_URL_IP_ENRICHMENT
+    webhook_path: ip-enrichment
+    test_script: scripts/test-ip-enrichment.sh
+    status: exported-only
+
+  - id: url-reputation-check
+    name: URL Reputation Check
+    file: workflows/url-reputation-check.json
+    tenant_story_id: 121686
+    flows: 1
+    webhook_env: WEBHOOK_URL_URL_REPUTATION
+    webhook_path: url-reputation-check
+    test_script: scripts/test-url-reputation.sh
+    status: exported-only
+
+  - id: dedup-alerts
+    name: Dedup Alerts
+    file: workflows/dedup-alerts.json
+    tenant_story_id: 121688
+    flows: 1
+    webhook_env: WEBHOOK_URL_DEDUP_ALERTS
+    webhook_path: dedup-alerts
+    test_script: scripts/test-dedup-alerts.sh
+    status: exported-only
+
+  - id: throttle-demo
+    name: Throttle Demo
+    file: workflows/throttle-demo.json
+    tenant_story_id: 121689
+    flows: 1
+    webhook_env: WEBHOOK_URL_THROTTLE_DEMO
+    webhook_path: throttle-demo
+    test_script: scripts/test-throttle-demo.sh
+    status: exported-only
+
+  - id: delay-retry
+    name: Delay Retry
+    file: workflows/delay-retry.json
+    tenant_story_id: 121690
+    flows: 1
+    webhook_env: WEBHOOK_URL_DELAY_RETRY
+    webhook_path: delay-retry
+    test_script: scripts/test-delay-retry.sh
+    status: exported-only
+
+  - id: geo-block-gate
+    name: Geo Block Gate
+    file: workflows/geo-block-gate.json
+    tenant_story_id: 121691
+    flows: 1
+    webhook_env: WEBHOOK_URL_GEO_BLOCK
+    webhook_path: geo-block-gate
+    test_script: scripts/test-geo-block-gate.sh
+    status: exported-only
+
+story_library:
+  - id: analyze-urls-fraud-abuse
+    name: Analyze URLS for fraud and abuse
+    file: story-library/analyze-urls-fraud-abuse.json
+    tenant_story_id: 121692
+    source: https://www.tines.com/library/stories/87699/
+    flows: 1
+    credentials: [Zendesk]
+    status: exported-only
+
+# Tier 3+ — not yet built; see exports/workflows/BUILD.md for Workbench prompts
+planned:
+  - id: email-to-ticket-stub
+    tier: 1
+    status: planned
+  - id: manual-run-playbook
+    tier: 1
+    status: planned
+  - id: multi-step-etl
+    tier: 2
+    status: planned
+  - id: case-record-stub
+    tier: 2
+    status: planned
+  - id: slack-alert-notify
+    tier: 3
+    status: planned
+  - id: servicenow-incident
+    tier: 3
+    status: planned
+  - id: ai-alert-summarizer
+    tier: 4
+    status: planned
+
+ce_budget:
+  max_active_flows: 3
+  used_flows: 2
+  remaining_flows: 1
+  max_events_per_month: 25000
+  tenant: https://wild-tree-3140.tines.com

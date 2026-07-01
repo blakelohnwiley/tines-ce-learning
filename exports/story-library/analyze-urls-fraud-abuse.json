@@ -1,0 +1,499 @@
+{
+  "schema_version": 30,
+  "standard_lib_version": 92,
+  "action_runtime_version": 83,
+  "name": "Analyze URLS for fraud and abuse",
+  "description": "Mitigate fraud risk by extracting URL images found on a public page, e.g. a Pinterest board, and analyzing each one for fraud and abuse using the OCR API. Then create a Zendesk ticket where an analyst can automatically flag content deemed as malicious.\n\ntags: Zendesk, Fraud, Abuse, Pinterest, Analyze, Beginner\nicons: 🔗,🔬,zendesk\nvisibility: public",
+  "guid": "171225b2cabb6cb38cb8b1c43dc24762",
+  "slug": "analyze_urls_for_fraud_and_abuse",
+  "agents": [
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "OCR an Image using OCR.Space",
+      "disabled": false,
+      "description": null,
+      "guid": "b97231de9af86bc001aa1e8aa99356e1",
+      "origin_story_identifier": "cloud:d521f765a49c72507257a2620612ee96:7ce495698e2a6f46b7d23066bc3b509b",
+      "options": {
+        "url": "https://api.ocr.space/parse/imageurl",
+        "content_type": "application_json",
+        "method": "get",
+        "payload": {
+          "apikey": "<<CREDENTIAL.ocr_space>>",
+          "url": "<<explode_image_urls.individual_image_url>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "Get URL",
+      "disabled": false,
+      "description": null,
+      "guid": "949c3738ff275103c48dcbe8f5500840",
+      "origin_story_identifier": "cloud:d521f765a49c72507257a2620612ee96:7ce495698e2a6f46b7d23066bc3b509b",
+      "options": {
+        "url": "<<submit_pinterest_board.body.url>>",
+        "content_type": "application_json",
+        "method": "get",
+        "payload": {},
+        "headers": {}
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "Extract Images",
+      "disabled": false,
+      "description": null,
+      "guid": "ad3b0f245c67780f28f5ccb61370f5b1",
+      "origin_story_identifier": "cloud:d521f765a49c72507257a2620612ee96:7ce495698e2a6f46b7d23066bc3b509b",
+      "options": {
+        "mode": "extract",
+        "matchers": [
+          {
+            "path": "=get_url.body",
+            "regexp": "https://i.pinimg.com/originals/[A-Za-z0-9\\-_:%&;\\?\\#\\/.=]+",
+            "to": "urls"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "Explode Image URLs",
+      "disabled": false,
+      "description": null,
+      "guid": "02c1b2a1548ff4a9cf721c54a851590b",
+      "origin_story_identifier": "cloud:d521f765a49c72507257a2620612ee96:7ce495698e2a6f46b7d23066bc3b509b",
+      "options": {
+        "mode": "explode",
+        "path": "=extract_images.urls",
+        "to": "individual_image_url"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "Create a Zendesk Ticket",
+      "disabled": false,
+      "description": null,
+      "guid": "f4aa4b5efad9da726b19369a084441f5",
+      "origin_story_identifier": "cloud:d521f765a49c72507257a2620612ee96:7ce495698e2a6f46b7d23066bc3b509b",
+      "options": {
+        "url": "https://<<RESOURCE.zendesk_domain>>/api/v2/tickets.json",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "ticket": {
+            "subject": "New Pinterest Board Report",
+            "comment": {
+              "body": "New Board Reported\n\nBoard URL: <<submit_pinterest_board.body.url>>\nReported By: <<submit_pinterest_board.headers.email>>\n\nImage Text Output\n<%for image in implode_images%><<explode_image_urls.individual_image_url>>:\n\n```\n\n<<image.ocr_an_image_using_ocr_space.body.ParsedResults.first.ParsedText>>\n\n```\n<%endfor%>\n\nTo Remove these Images click [here](<<PROMPT(\"remove\")>>)\nTo Disable the account click [here](<<PROMPT(\"disable\")>>)"
+            }
+          }
+        },
+        "basic_auth": [
+          "<<user_email>>/token",
+          "<<CREDENTIAL.zendesk>>"
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "Implode Images",
+      "disabled": false,
+      "description": null,
+      "guid": "4d1e2fa1f3d67f7f2ac4ac7c6dc012b2",
+      "origin_story_identifier": "cloud:d521f765a49c72507257a2620612ee96:7ce495698e2a6f46b7d23066bc3b509b",
+      "options": {
+        "mode": "implode",
+        "guid_path": "=explode_image_urls.guid",
+        "size_path": "=LIQUID_SIZE(explode_image_urls, \"dot_notation\")"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "Trigger if Remove Content Clicked",
+      "disabled": false,
+      "description": null,
+      "guid": "677f53a7c3cf35f1b298e5b02440e3e9",
+      "origin_story_identifier": "cloud:d521f765a49c72507257a2620612ee96:7ce495698e2a6f46b7d23066bc3b509b",
+      "options": {
+        "rules": [
+          {
+            "type": "regex",
+            "value": "remove",
+            "path": "<<create_a_zendesk_ticket.prompt.status>>"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EmailAgent",
+      "name": "Email Action",
+      "disabled": false,
+      "description": null,
+      "guid": "28fb7818a78a7192bbff93ab6b6a1bf7",
+      "origin_story_identifier": "cloud:d521f765a49c72507257a2620612ee96:7ce495698e2a6f46b7d23066bc3b509b",
+      "options": {
+        "recipients": [
+          "<<support_email>>"
+        ],
+        "subject": "Fraudulent Content Found",
+        "body": "New Board Reported<br><br>\n\nBoard URL: <<submit_pinterest_board.body.url>>\nReported By: <<submit_pinterest_board.headers.email>>\n"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::FormAgent",
+      "name": "Submit Pinterest Board",
+      "disabled": false,
+      "description": null,
+      "guid": "ba14c426b082ded18b0c27f0a6e04e6b",
+      "origin_story_identifier": "cloud:d521f765a49c72507257a2620612ee96:7ce495698e2a6f46b7d23066bc3b509b",
+      "options": {
+        "description": "",
+        "fields": "",
+        "submissionMessage": "Thank you for your submission",
+        "visibility": "tenant",
+        "mode": "success_page",
+        "anonymize": false,
+        "auto_submit": false,
+        "url_identifier": "3f572c9800035d90cf59b632d135ba31"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    }
+  ],
+  "diagram_notes": [
+    {
+      "content": "\nEnter a URL at using the [form](./form)\n\nA sample Story that analyses URLs images found on a page for fraud abuse. This is not looking for phishing, rather account takeovers on sites capable of hosting content.\n\nThis Story uses a Pinterest board as an example - it will extract all images, analyze all of them using an OCR API, and create a Zendesk ticket where a fraud analyst can automatically flag content deemed as malicious",
+      "position": [
+        600,
+        -150
+      ],
+      "guid": "315086de803ee199bee0f8a75a1728ce",
+      "width": 270
+    },
+    {
+      "content": "# Requirements\n\nThis story uses a free API key from [ocr.space](https://ocr.space/) - this should be added as a credential `ocr_space`\n\nIt also creates tickets in Zendesk for review - if this is needed you should add a `zendesk` credential too",
+      "position": [
+        600,
+        315
+      ],
+      "guid": "5a78603ad1dd08e32263974396c4df92",
+      "width": 270
+    }
+  ],
+  "links": [
+    {
+      "source": 0,
+      "receiver": 5
+    },
+    {
+      "source": 1,
+      "receiver": 2
+    },
+    {
+      "source": 2,
+      "receiver": 3
+    },
+    {
+      "source": 3,
+      "receiver": 0
+    },
+    {
+      "source": 4,
+      "receiver": 6
+    },
+    {
+      "source": 5,
+      "receiver": 4
+    },
+    {
+      "source": 6,
+      "receiver": 7
+    },
+    {
+      "source": 8,
+      "receiver": 1
+    }
+  ],
+  "diagram_layout": "{\"02c1b2a1548ff4a9cf721c54a851590b\":[285,285],\"28fb7818a78a7192bbff93ab6b6a1bf7\":[285,825],\"4d1e2fa1f3d67f7f2ac4ac7c6dc012b2\":[285,495],\"677f53a7c3cf35f1b298e5b02440e3e9\":[285,720],\"949c3738ff275103c48dcbe8f5500840\":[285,120],\"ad3b0f245c67780f28f5ccb61370f5b1\":[285,195],\"b97231de9af86bc001aa1e8aa99356e1\":[285,375],\"ba14c426b082ded18b0c27f0a6e04e6b\":[285,-180],\"f4aa4b5efad9da726b19369a084441f5\":[285,600]}",
+  "story_library_metadata": {
+    "tags": [
+      "Beginner",
+      "Pinterest",
+      "Zendesk",
+      "wcm:security"
+    ],
+    "icons": [
+      "🔗",
+      "🔬",
+      "zendesk"
+    ],
+    "visibility": "public"
+  },
+  "monitor_failures": false,
+  "synchronous_webhooks_enabled": false,
+  "integrations": [],
+  "sections": [],
+  "parent_only_send_to_story": false,
+  "send_to_story_timeout_enabled": false,
+  "send_to_story_timeout_duration_seconds": null,
+  "keep_events_for": 86400,
+  "reporting_status": true,
+  "send_to_story_enabled": false,
+  "entry_agent_guid": null,
+  "exit_agent_guids": [],
+  "api_entry_action_guids": [],
+  "api_exit_action_guids": [],
+  "send_to_story_access": null,
+  "send_to_story_access_source": 0,
+  "send_to_story_skill_use_requires_confirmation": true,
+  "pages": [
+    {
+      "containers": [
+        {
+          "guid": "30744a365381e6ade845db8122411cfb",
+          "ranking": 0,
+          "category": 0,
+          "name": "Container",
+          "layout": "vertical",
+          "alignment": "no_alignment",
+          "loop": "",
+          "spacing": "no_spacing",
+          "user_driven_loop": false
+        },
+        {
+          "guid": "06db7f196fbdf70517416442f4a7412f",
+          "ranking": 1,
+          "category": 0,
+          "name": "Container",
+          "layout": "vertical",
+          "alignment": "no_alignment",
+          "loop": "",
+          "spacing": "no_spacing",
+          "user_driven_loop": false
+        },
+        {
+          "guid": "d5a0309374f781a7fd69fccf04468124",
+          "ranking": 2,
+          "category": 0,
+          "name": "Container",
+          "layout": "vertical",
+          "alignment": "no_alignment",
+          "loop": "",
+          "spacing": "no_spacing",
+          "user_driven_loop": false
+        }
+      ],
+      "conditions": [],
+      "fields": [
+        {
+          "guid": "f7a41873-4710-419f-8f30-74f11cede034",
+          "name": "Submit Pinterest Board",
+          "description": "",
+          "type": "TITLE",
+          "ranking": 0,
+          "container_guid": "30744a365381e6ade845db8122411cfb",
+          "width": "AUTO",
+          "width_type": "FLEX_WIDTH",
+          "width_fixed_px": 0,
+          "content": "Submit Pinterest Board"
+        },
+        {
+          "guid": "f0ea81ed-c0b5-4175-bf5a-772a8480eb60",
+          "name": "URL",
+          "description": "Enter the pinterest board url e.g.\n\nhttps://www.pinterest.ie/hollowelldavey67/netflix-gift-code/",
+          "type": "URL",
+          "ranking": 0,
+          "container_guid": "06db7f196fbdf70517416442f4a7412f",
+          "width": "AUTO",
+          "width_type": "FLEX_WIDTH",
+          "width_fixed_px": 0,
+          "required": false,
+          "default_value": null,
+          "validation_pattern": null,
+          "validation_error_message": null
+        },
+        {
+          "guid": "7ec6da91-f04e-4dc0-9d05-2c481298c964",
+          "name": "Submit form",
+          "description": "",
+          "type": "BUTTON",
+          "ranking": 0,
+          "container_guid": "d5a0309374f781a7fd69fccf04468124",
+          "width": "AUTO",
+          "width_type": "FLEX_WIDTH",
+          "width_fixed_px": 0,
+          "content": "Submit form",
+          "default_value": null,
+          "style": "primary"
+        }
+      ],
+      "visibility": "tenant",
+      "agent_guid": "ba14c426b082ded18b0c27f0a6e04e6b",
+      "success_message": "Thank you for your submission",
+      "loading_message": "",
+      "logo_contents": null,
+      "logo_filename": null,
+      "display_logo": false,
+      "icon": ":trophy:",
+      "sso_groups": null,
+      "display_mode": "bordered",
+      "app": null
+    }
+  ],
+  "tags": [],
+  "time_saved_unit": "minutes",
+  "time_saved_value": 0,
+  "origin_story_identifier": "cloud:d521f765a49c72507257a2620612ee96:7ce495698e2a6f46b7d23066bc3b509b",
+  "recipients": [
+    "user@applyready.dev"
+  ],
+  "integration_product": null,
+  "integration_vendor": null,
+  "llm_product_instructions": "",
+  "start_reference": null,
+  "app_endpoints": [],
+  "send_to_stories": [],
+  "exported_at": "2026-07-01T22:22:47Z",
+  "icon": ":zendesk:"
+}

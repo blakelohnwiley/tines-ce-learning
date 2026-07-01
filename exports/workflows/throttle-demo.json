@@ -1,0 +1,149 @@
+{
+  "schema_version": 30,
+  "standard_lib_version": 92,
+  "action_runtime_version": 83,
+  "name": "Throttle Demo",
+  "description": null,
+  "guid": "559a5c64a02372f48a117d57948518cb",
+  "slug": "throttle_demo",
+  "agents": [
+    {
+      "type": "Agents::WebhookAgent",
+      "name": "receive_burst",
+      "disabled": false,
+      "description": null,
+      "guid": "0c5efbb3f71a6e17a11d79c4c0ab2936",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:559a5c64a02372f48a117d57948518cb",
+      "options": {
+        "path": "throttle-demo",
+        "secret": "e5e9afce08d4d921d1971d02db67f0d8",
+        "verbs": "get,post"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "rate_limit",
+      "disabled": false,
+      "description": null,
+      "guid": "edb9da8ccfed3beb3f558110a1b17cdd",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:559a5c64a02372f48a117d57948518cb",
+      "options": {
+        "mode": "throttle",
+        "loop": false,
+        "payload": {},
+        "capacity": 3,
+        "interval": "minute"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "pass_through",
+      "disabled": false,
+      "description": null,
+      "guid": "23238368f87584e3b36f27881c489936",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:559a5c64a02372f48a117d57948518cb",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "event_id": "<<receive_burst.id>>",
+          "payload": "<<receive_burst.body>>",
+          "throttled": true,
+          "processed_at": "<<receive_burst.date>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    }
+  ],
+  "diagram_notes": [],
+  "links": [
+    {
+      "source": 0,
+      "receiver": 1
+    },
+    {
+      "source": 1,
+      "receiver": 2
+    }
+  ],
+  "diagram_layout": "{\"0c5efbb3f71a6e17a11d79c4c0ab2936\":[105,105],\"23238368f87584e3b36f27881c489936\":[105,465],\"edb9da8ccfed3beb3f558110a1b17cdd\":[105,285]}",
+  "story_library_metadata": {},
+  "monitor_failures": false,
+  "synchronous_webhooks_enabled": false,
+  "integrations": [],
+  "sections": [],
+  "parent_only_send_to_story": false,
+  "send_to_story_timeout_enabled": false,
+  "send_to_story_timeout_duration_seconds": null,
+  "keep_events_for": 86400,
+  "reporting_status": true,
+  "send_to_story_enabled": false,
+  "entry_agent_guid": null,
+  "exit_agent_guids": [],
+  "api_entry_action_guids": [],
+  "api_exit_action_guids": [],
+  "send_to_story_access": null,
+  "send_to_story_access_source": 0,
+  "send_to_story_skill_use_requires_confirmation": true,
+  "pages": [],
+  "tags": [],
+  "time_saved_unit": "minutes",
+  "time_saved_value": 0,
+  "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:559a5c64a02372f48a117d57948518cb",
+  "recipients": [
+    "user@applyready.dev"
+  ],
+  "integration_product": null,
+  "integration_vendor": null,
+  "llm_product_instructions": "",
+  "start_reference": null,
+  "app_endpoints": [],
+  "send_to_stories": [],
+  "exported_at": "2026-07-01T22:19:13Z",
+  "icon": ":building_construction:"
+}

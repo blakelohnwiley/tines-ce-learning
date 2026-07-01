@@ -1,0 +1,241 @@
+{
+  "schema_version": 30,
+  "standard_lib_version": 92,
+  "action_runtime_version": 83,
+  "name": "Your first story",
+  "description": null,
+  "guid": "35726c46dcc368118a64c8c39b4d1391",
+  "slug": "your_first_story",
+  "agents": [
+    {
+      "type": "Agents::WebhookAgent",
+      "name": "receive_alert",
+      "disabled": false,
+      "description": null,
+      "guid": "094a3db4bef4a271fb73fb1c928ddcd4",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:35726c46dcc368118a64c8c39b4d1391",
+      "options": {
+        "path": "your-first-story",
+        "secret": "fce866990d6d41ddc2171d54ba69da82",
+        "verbs": "get,post"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "normalize_alert",
+      "disabled": false,
+      "description": null,
+      "guid": "787fe89ea951fe38c36dd04d10d0bd4b",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:35726c46dcc368118a64c8c39b4d1391",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "alert_id": "<<receive_alert.body.alert>>-<<receive_alert.id>>",
+          "severity": "<<receive_alert.body.severity>>",
+          "source": "<<receive_alert.body.source>>",
+          "received_at": "<<receive_alert.date>>",
+          "note": "<<receive_alert.body.note>>",
+          "normalized": true
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "check_severity",
+      "disabled": false,
+      "description": null,
+      "guid": "79e97c4003ba234c9d856b551e56a029",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:35726c46dcc368118a64c8c39b4d1391",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "high",
+            "path": "<<normalize_alert.severity>>"
+          },
+          {
+            "type": "field==value",
+            "value": "critical",
+            "path": "<<normalize_alert.severity>>"
+          }
+        ],
+        "must_match": 1
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "escalate_alert",
+      "disabled": false,
+      "description": null,
+      "guid": "c6fa5596dc104470cf198a8314192296",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:35726c46dcc368118a64c8c39b4d1391",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "escalate",
+          "priority": "P1",
+          "alert_id": "<<normalize_alert.alert_id>>",
+          "severity": "<<normalize_alert.severity>>",
+          "source": "<<normalize_alert.source>>",
+          "message": "High-severity alert from <<normalize_alert.source>> requires review",
+          "escalated_at": "<<normalize_alert.received_at>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "log_alert",
+      "disabled": false,
+      "description": null,
+      "guid": "bf795781f57a2e26bfb20d8ffe1cf7bb",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:35726c46dcc368118a64c8c39b4d1391",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "log",
+          "priority": "P4",
+          "alert_id": "<<normalize_alert.alert_id>>",
+          "severity": "<<normalize_alert.severity>>",
+          "source": "<<normalize_alert.source>>",
+          "message": "Alert logged for audit",
+          "logged_at": "<<normalize_alert.received_at>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    }
+  ],
+  "diagram_notes": [],
+  "links": [
+    {
+      "source": 0,
+      "receiver": 1
+    },
+    {
+      "source": 1,
+      "receiver": 2
+    },
+    {
+      "source": 2,
+      "receiver": 3
+    },
+    {
+      "source": 2,
+      "receiver": 4,
+      "link_type": "secondary"
+    }
+  ],
+  "diagram_layout": "{\"094a3db4bef4a271fb73fb1c928ddcd4\":[375,120],\"787fe89ea951fe38c36dd04d10d0bd4b\":[375,300],\"79e97c4003ba234c9d856b551e56a029\":[375,480],\"bf795781f57a2e26bfb20d8ffe1cf7bb\":[720,660],\"c6fa5596dc104470cf198a8314192296\":[375,660]}",
+  "story_library_metadata": {},
+  "monitor_failures": false,
+  "synchronous_webhooks_enabled": false,
+  "integrations": [],
+  "sections": [],
+  "parent_only_send_to_story": false,
+  "send_to_story_timeout_enabled": false,
+  "send_to_story_timeout_duration_seconds": null,
+  "keep_events_for": 604800,
+  "reporting_status": true,
+  "send_to_story_enabled": false,
+  "entry_agent_guid": null,
+  "exit_agent_guids": [],
+  "api_entry_action_guids": [],
+  "api_exit_action_guids": [],
+  "send_to_story_access": null,
+  "send_to_story_access_source": 0,
+  "send_to_story_skill_use_requires_confirmation": true,
+  "pages": [],
+  "tags": [],
+  "time_saved_unit": "minutes",
+  "time_saved_value": 0,
+  "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:35726c46dcc368118a64c8c39b4d1391",
+  "recipients": [
+    "user@applyready.dev"
+  ],
+  "integration_product": null,
+  "integration_vendor": null,
+  "llm_product_instructions": "",
+  "start_reference": null,
+  "app_endpoints": [],
+  "send_to_stories": [],
+  "exported_at": "2026-07-01T22:12:14Z"
+}

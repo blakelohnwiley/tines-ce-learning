@@ -1,0 +1,228 @@
+{
+  "schema_version": 30,
+  "standard_lib_version": 92,
+  "action_runtime_version": 83,
+  "name": "URL Reputation Check",
+  "description": null,
+  "guid": "cdad0cb18584760374bb8bf3cd5dac61",
+  "slug": "url_reputation_check",
+  "agents": [
+    {
+      "type": "Agents::WebhookAgent",
+      "name": "receive_url",
+      "disabled": false,
+      "description": null,
+      "guid": "5382d9988bf334e6aca2a1d43fa30610",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:cdad0cb18584760374bb8bf3cd5dac61",
+      "options": {
+        "path": "url-reputation-check",
+        "secret": "bb0621b8a183d118ec6c4fc30f108a1c",
+        "verbs": "get,post"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "check_url",
+      "disabled": false,
+      "description": null,
+      "guid": "b05be55364e0d089509f1b033be5ed32",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:cdad0cb18584760374bb8bf3cd5dac61",
+      "options": {
+        "url": "https://httpbin.org/get",
+        "content_type": "application_json",
+        "method": "get",
+        "payload": {
+          "url": "<<receive_url.body.url>>"
+        },
+        "emit_failure_event": false
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "is_suspicious",
+      "disabled": false,
+      "description": null,
+      "guid": "d00e377c156cb2ab511b42ad6a6d23cc",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:cdad0cb18584760374bb8bf3cd5dac61",
+      "options": {
+        "rules": [
+          {
+            "type": "regex",
+            "value": "(?i)(malware|phish|evil)",
+            "path": "<<receive_url.body.url>>"
+          }
+        ],
+        "must_match": 1
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "flag_malicious",
+      "disabled": false,
+      "description": null,
+      "guid": "985f763b8742ce7ef95ce4eb8d1fd591",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:cdad0cb18584760374bb8bf3cd5dac61",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "block",
+          "url": "<<receive_url.body.url>>",
+          "reason": "suspicious_pattern",
+          "checked_at": "<<receive_url.date>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "allow_url",
+      "disabled": false,
+      "description": null,
+      "guid": "344af3c1b575ef5109791889dd66659e",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:cdad0cb18584760374bb8bf3cd5dac61",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "allow",
+          "url": "<<receive_url.body.url>>",
+          "reason": "clean",
+          "checked_at": "<<receive_url.date>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    }
+  ],
+  "diagram_notes": [],
+  "links": [
+    {
+      "source": 0,
+      "receiver": 1
+    },
+    {
+      "source": 1,
+      "receiver": 2
+    },
+    {
+      "source": 2,
+      "receiver": 3
+    },
+    {
+      "source": 2,
+      "receiver": 4,
+      "link_type": "secondary"
+    }
+  ],
+  "diagram_layout": "{\"344af3c1b575ef5109791889dd66659e\":[450,645],\"5382d9988bf334e6aca2a1d43fa30610\":[105,105],\"985f763b8742ce7ef95ce4eb8d1fd591\":[105,645],\"b05be55364e0d089509f1b033be5ed32\":[105,285],\"d00e377c156cb2ab511b42ad6a6d23cc\":[105,465]}",
+  "story_library_metadata": {},
+  "monitor_failures": false,
+  "synchronous_webhooks_enabled": false,
+  "integrations": [],
+  "sections": [],
+  "parent_only_send_to_story": false,
+  "send_to_story_timeout_enabled": false,
+  "send_to_story_timeout_duration_seconds": null,
+  "keep_events_for": 86400,
+  "reporting_status": true,
+  "send_to_story_enabled": false,
+  "entry_agent_guid": null,
+  "exit_agent_guids": [],
+  "api_entry_action_guids": [],
+  "api_exit_action_guids": [],
+  "send_to_story_access": null,
+  "send_to_story_access_source": 0,
+  "send_to_story_skill_use_requires_confirmation": true,
+  "pages": [],
+  "tags": [],
+  "time_saved_unit": "minutes",
+  "time_saved_value": 0,
+  "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:cdad0cb18584760374bb8bf3cd5dac61",
+  "recipients": [
+    "user@applyready.dev"
+  ],
+  "integration_product": null,
+  "integration_vendor": null,
+  "llm_product_instructions": "",
+  "start_reference": null,
+  "app_endpoints": [],
+  "send_to_stories": [],
+  "exported_at": "2026-07-01T22:17:43Z",
+  "icon": ":desert_island:"
+}

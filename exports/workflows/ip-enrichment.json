@@ -1,0 +1,153 @@
+{
+  "schema_version": 30,
+  "standard_lib_version": 92,
+  "action_runtime_version": 83,
+  "name": "IP Enrichment",
+  "description": null,
+  "guid": "e4f9bed78e2df4df06226756d46ba0f1",
+  "slug": "ip_enrichment",
+  "agents": [
+    {
+      "type": "Agents::WebhookAgent",
+      "name": "receive_ip",
+      "disabled": false,
+      "description": null,
+      "guid": "d087e5bfccf190d9a2bc9b703db13af0",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:e4f9bed78e2df4df06226756d46ba0f1",
+      "options": {
+        "path": "ip-enrichment",
+        "secret": "891be38f771cc58ff31364137e77fc6d",
+        "verbs": "get,post"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "lookup_ip",
+      "disabled": false,
+      "description": null,
+      "guid": "2b81b50c35d88b4cca53b0b31eea0748",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:e4f9bed78e2df4df06226756d46ba0f1",
+      "options": {
+        "url": "https://ip-api.com/json/<<receive_ip.body.ip>>?fields=status,message,country,countryCode,region,city,query",
+        "content_type": "application_json",
+        "method": "get",
+        "payload": {},
+        "emit_failure_event": false
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "format_enrichment",
+      "disabled": false,
+      "description": null,
+      "guid": "6f23bda23caf5209dcd168092c81815c",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:e4f9bed78e2df4df06226756d46ba0f1",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "ip": "<<lookup_ip.body.query>>",
+          "country": "<<lookup_ip.body.country>>",
+          "country_code": "<<lookup_ip.body.countryCode>>",
+          "city": "<<lookup_ip.body.city>>",
+          "region": "<<lookup_ip.body.region>>",
+          "status": "<<lookup_ip.body.status>>",
+          "enriched_at": "<<receive_ip.date>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    }
+  ],
+  "diagram_notes": [],
+  "links": [
+    {
+      "source": 0,
+      "receiver": 1
+    },
+    {
+      "source": 1,
+      "receiver": 2
+    }
+  ],
+  "diagram_layout": "{\"2b81b50c35d88b4cca53b0b31eea0748\":[105,285],\"6f23bda23caf5209dcd168092c81815c\":[105,465],\"d087e5bfccf190d9a2bc9b703db13af0\":[105,105]}",
+  "story_library_metadata": {},
+  "monitor_failures": false,
+  "synchronous_webhooks_enabled": false,
+  "integrations": [],
+  "sections": [],
+  "parent_only_send_to_story": false,
+  "send_to_story_timeout_enabled": false,
+  "send_to_story_timeout_duration_seconds": null,
+  "keep_events_for": 86400,
+  "reporting_status": true,
+  "send_to_story_enabled": false,
+  "entry_agent_guid": null,
+  "exit_agent_guids": [],
+  "api_entry_action_guids": [],
+  "api_exit_action_guids": [],
+  "send_to_story_access": null,
+  "send_to_story_access_source": 0,
+  "send_to_story_skill_use_requires_confirmation": true,
+  "pages": [],
+  "tags": [],
+  "time_saved_unit": "minutes",
+  "time_saved_value": 0,
+  "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:e4f9bed78e2df4df06226756d46ba0f1",
+  "recipients": [
+    "user@applyready.dev"
+  ],
+  "integration_product": null,
+  "integration_vendor": null,
+  "llm_product_instructions": "",
+  "start_reference": null,
+  "app_endpoints": [],
+  "send_to_stories": [],
+  "exported_at": "2026-07-01T22:15:26Z",
+  "icon": ":soap:"
+}

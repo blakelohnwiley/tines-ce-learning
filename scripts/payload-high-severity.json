@@ -1,0 +1,6 @@
+{
+  "alert": "suspicious-login",
+  "severity": "high",
+  "source": "local-script",
+  "note": "Test high-severity branch → escalate_alert"
+}

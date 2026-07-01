@@ -1,0 +1,151 @@
+{
+  "schema_version": 30,
+  "standard_lib_version": 92,
+  "action_runtime_version": 83,
+  "name": "Dedup Alerts",
+  "description": null,
+  "guid": "e2aa13f773a38fec0ef4f1dc97f0e1f1",
+  "slug": "dedup_alerts",
+  "agents": [
+    {
+      "type": "Agents::WebhookAgent",
+      "name": "receive_alert",
+      "disabled": false,
+      "description": null,
+      "guid": "d0b911afa1b1415080da74c50a4cafe2",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:e2aa13f773a38fec0ef4f1dc97f0e1f1",
+      "options": {
+        "path": "dedup-alerts",
+        "secret": "14693550184c1bbcaeecdb79164c0608",
+        "verbs": "get,post"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "dedupe_alert",
+      "disabled": false,
+      "description": null,
+      "guid": "f46a0a66e5880f25ad6c5c5723cdb7c0",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:e2aa13f773a38fec0ef4f1dc97f0e1f1",
+      "options": {
+        "mode": "deduplicate",
+        "loop": false,
+        "payload": {},
+        "path": "<<receive_alert.body.alert_id>>",
+        "period": 300
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "process_alert",
+      "disabled": false,
+      "description": null,
+      "guid": "7b13bd8dea38726be511710e1b17084d",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:e2aa13f773a38fec0ef4f1dc97f0e1f1",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "alert_id": "<<receive_alert.body.alert_id>>",
+          "severity": "<<receive_alert.body.severity>>",
+          "source": "<<receive_alert.body.source>>",
+          "deduplicated": true,
+          "processed_at": "<<receive_alert.date>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    }
+  ],
+  "diagram_notes": [],
+  "links": [
+    {
+      "source": 0,
+      "receiver": 1
+    },
+    {
+      "source": 1,
+      "receiver": 2
+    }
+  ],
+  "diagram_layout": "{\"7b13bd8dea38726be511710e1b17084d\":[105,465],\"d0b911afa1b1415080da74c50a4cafe2\":[105,105],\"f46a0a66e5880f25ad6c5c5723cdb7c0\":[105,285]}",
+  "story_library_metadata": {},
+  "monitor_failures": false,
+  "synchronous_webhooks_enabled": false,
+  "integrations": [],
+  "sections": [],
+  "parent_only_send_to_story": false,
+  "send_to_story_timeout_enabled": false,
+  "send_to_story_timeout_duration_seconds": null,
+  "keep_events_for": 86400,
+  "reporting_status": true,
+  "send_to_story_enabled": false,
+  "entry_agent_guid": null,
+  "exit_agent_guids": [],
+  "api_entry_action_guids": [],
+  "api_exit_action_guids": [],
+  "send_to_story_access": null,
+  "send_to_story_access_source": 0,
+  "send_to_story_skill_use_requires_confirmation": true,
+  "pages": [],
+  "tags": [],
+  "time_saved_unit": "minutes",
+  "time_saved_value": 0,
+  "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:e2aa13f773a38fec0ef4f1dc97f0e1f1",
+  "recipients": [
+    "user@applyready.dev"
+  ],
+  "integration_product": null,
+  "integration_vendor": null,
+  "llm_product_instructions": "",
+  "start_reference": null,
+  "app_endpoints": [],
+  "send_to_stories": [],
+  "exported_at": "2026-07-01T22:18:23Z",
+  "icon": ":drum_with_drumsticks:"
+}

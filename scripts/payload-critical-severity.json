@@ -1,0 +1,6 @@
+{
+  "alert": "ransomware-detected",
+  "severity": "critical",
+  "source": "local-script",
+  "note": "Test critical branch → critical_escalate → enrich_critical"
+}

@@ -1,0 +1,163 @@
+{
+  "schema_version": 30,
+  "standard_lib_version": 92,
+  "action_runtime_version": 83,
+  "name": "Scheduled Heartbeat",
+  "description": null,
+  "guid": "89cdc7823ecbd6e4dfd0c81eb72cbbbe",
+  "slug": "scheduled_heartbeat",
+  "agents": [
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "heartbeat_schedule",
+      "disabled": false,
+      "description": null,
+      "guid": "6d121bc501f28ea08640ec7981c90dbf",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:89cdc7823ecbd6e4dfd0c81eb72cbbbe",
+      "options": {
+        "url": "https://httpbin.org/get",
+        "content_type": "application_json",
+        "method": "get",
+        "payload": {},
+        "emit_failure_event": false
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": [
+        {
+          "cron": "*/15 * * * *",
+          "timezone": "UTC"
+        }
+      ]
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "format_heartbeat",
+      "disabled": false,
+      "description": null,
+      "guid": "ecee380dc9f17b41cfb4963de168b5bd",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:89cdc7823ecbd6e4dfd0c81eb72cbbbe",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "event": "heartbeat",
+          "status": "alive",
+          "timestamp": "<<heartbeat_schedule.date>>",
+          "story": "scheduled-heartbeat"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "ping_httpbin",
+      "disabled": false,
+      "description": null,
+      "guid": "f1aac2400d4d22ef56c71f0ace952a1b",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:89cdc7823ecbd6e4dfd0c81eb72cbbbe",
+      "options": {
+        "url": "https://httpbin.org/post",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "event": "<<format_heartbeat.event>>",
+          "status": "<<format_heartbeat.status>>",
+          "timestamp": "<<format_heartbeat.timestamp>>",
+          "story": "<<format_heartbeat.story>>"
+        },
+        "emit_failure_event": false
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    }
+  ],
+  "diagram_notes": [],
+  "links": [
+    {
+      "source": 0,
+      "receiver": 1
+    },
+    {
+      "source": 1,
+      "receiver": 2
+    }
+  ],
+  "diagram_layout": "{\"6d121bc501f28ea08640ec7981c90dbf\":[105,105],\"ecee380dc9f17b41cfb4963de168b5bd\":[105,285],\"f1aac2400d4d22ef56c71f0ace952a1b\":[105,465]}",
+  "story_library_metadata": {},
+  "monitor_failures": false,
+  "synchronous_webhooks_enabled": false,
+  "integrations": [],
+  "sections": [],
+  "parent_only_send_to_story": false,
+  "send_to_story_timeout_enabled": false,
+  "send_to_story_timeout_duration_seconds": null,
+  "keep_events_for": 86400,
+  "reporting_status": true,
+  "send_to_story_enabled": false,
+  "entry_agent_guid": null,
+  "exit_agent_guids": [],
+  "api_entry_action_guids": [],
+  "api_exit_action_guids": [],
+  "send_to_story_access": null,
+  "send_to_story_access_source": 0,
+  "send_to_story_skill_use_requires_confirmation": true,
+  "pages": [],
+  "tags": [],
+  "time_saved_unit": "minutes",
+  "time_saved_value": 0,
+  "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:89cdc7823ecbd6e4dfd0c81eb72cbbbe",
+  "recipients": [
+    "user@applyready.dev"
+  ],
+  "integration_product": null,
+  "integration_vendor": null,
+  "llm_product_instructions": "",
+  "start_reference": null,
+  "app_endpoints": [],
+  "send_to_stories": [],
+  "exported_at": "2026-07-01T22:14:27Z",
+  "icon": ":satellite_antenna:"
+}

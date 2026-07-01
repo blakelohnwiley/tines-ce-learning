@@ -1,0 +1,6 @@
+{
+  "alert": "blocked-port-scan",
+  "severity": "low",
+  "source": "firewall",
+  "note": "Test firewall branch → firewall_log"
+}

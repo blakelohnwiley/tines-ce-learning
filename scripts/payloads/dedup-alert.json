@@ -1,0 +1,5 @@
+{
+  "alert_id": "ALT-DEDUP-001",
+  "severity": "medium",
+  "source": "ids"
+}

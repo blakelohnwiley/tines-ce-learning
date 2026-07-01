@@ -1,0 +1,480 @@
+{
+  "schema_version": 30,
+  "standard_lib_version": 92,
+  "action_runtime_version": 83,
+  "name": "Alert Triage Advanced",
+  "description": null,
+  "guid": "bd89d81aa97cc4c3bae41eb53eba212b",
+  "slug": "alert_triage_advanced",
+  "agents": [
+    {
+      "type": "Agents::WebhookAgent",
+      "name": "receive_alert",
+      "disabled": false,
+      "description": null,
+      "guid": "796e952f9acf637a24ce74e2a4b4041a",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:35726c46dcc368118a64c8c39b4d1391",
+      "options": {
+        "path": "alert-triage-advanced",
+        "secret": "fce866990d6d41ddc2171d54ba69da82"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "normalize_alert",
+      "disabled": false,
+      "description": null,
+      "guid": "1b1a1e5fbf4f2c0b0449ef351761dbb8",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:35726c46dcc368118a64c8c39b4d1391",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "alert_id": "<<receive_alert.body.alert>>-<<receive_alert.id>>",
+          "severity": "<<receive_alert.body.severity>>",
+          "source": "<<receive_alert.body.source>>",
+          "received_at": "<<receive_alert.date>>",
+          "note": "<<receive_alert.body.note>>",
+          "normalized": true
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "check_severity",
+      "disabled": false,
+      "description": null,
+      "guid": "28a635bd96c4748a44adee8de905238b",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:35726c46dcc368118a64c8c39b4d1391",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "high",
+            "path": "<<normalize_alert.severity>>"
+          },
+          {
+            "type": "field==value",
+            "value": "critical",
+            "path": "<<normalize_alert.severity>>"
+          }
+        ],
+        "must_match": 1
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "escalate_alert",
+      "disabled": false,
+      "description": null,
+      "guid": "83bb047eae577512efe89befb3d5fb3e",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:35726c46dcc368118a64c8c39b4d1391",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "escalate",
+          "priority": "P1",
+          "alert_id": "<<normalize_alert.alert_id>>",
+          "severity": "<<normalize_alert.severity>>",
+          "source": "<<normalize_alert.source>>",
+          "message": "High-severity alert from <<normalize_alert.source>> requires review",
+          "escalated_at": "<<normalize_alert.received_at>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "log_alert",
+      "disabled": false,
+      "description": null,
+      "guid": "8604fd92cb9965e10143c6d83f53436b",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:35726c46dcc368118a64c8c39b4d1391",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "log",
+          "priority": "P4",
+          "alert_id": "<<normalize_alert.alert_id>>",
+          "severity": "<<normalize_alert.severity>>",
+          "source": "<<normalize_alert.source>>",
+          "message": "Alert logged for audit",
+          "logged_at": "<<normalize_alert.received_at>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "check_critical",
+      "disabled": false,
+      "description": null,
+      "guid": "ce0a148f4ff196b90d4adb74c99c7d52",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:bd89d81aa97cc4c3bae41eb53eba212b",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "critical",
+            "path": "<<normalize_alert.severity>>"
+          }
+        ],
+        "must_match": 1
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "critical_escalate",
+      "disabled": false,
+      "description": null,
+      "guid": "e3ab0e966f8986d887177677bc4189ea",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:bd89d81aa97cc4c3bae41eb53eba212b",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "escalate",
+          "priority": "P0",
+          "alert_id": "<<normalize_alert.alert_id>>",
+          "severity": "<<normalize_alert.severity>>",
+          "source": "<<normalize_alert.source>>",
+          "message": "CRITICAL severity alert — immediate P0 response required",
+          "escalated_at": "<<normalize_alert.received_at>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "check_source",
+      "disabled": false,
+      "description": null,
+      "guid": "8d4759183619ee7858afaf503fd4a151",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:bd89d81aa97cc4c3bae41eb53eba212b",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "firewall",
+            "path": "<<normalize_alert.source>>"
+          }
+        ],
+        "must_match": 1
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "firewall_log",
+      "disabled": false,
+      "description": null,
+      "guid": "c04b759b5777f13b3049b4eb41008f47",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:bd89d81aa97cc4c3bae41eb53eba212b",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "log",
+          "priority": "P3",
+          "alert_id": "<<normalize_alert.alert_id>>",
+          "severity": "<<normalize_alert.severity>>",
+          "source": "firewall",
+          "message": "Firewall alert logged for review",
+          "logged_at": "<<normalize_alert.received_at>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "enrich_critical",
+      "disabled": false,
+      "description": null,
+      "guid": "49372fef34a0aa4e398e72a10a79f1a3",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:bd89d81aa97cc4c3bae41eb53eba212b",
+      "options": {
+        "url": "https://httpbin.org/post",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "alert_id": "<<normalize_alert.alert_id>>",
+          "priority": "P0",
+          "severity": "<<normalize_alert.severity>>",
+          "source": "<<normalize_alert.source>>",
+          "enrichment_type": "critical"
+        },
+        "emit_failure_event": false
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "enrich_high",
+      "disabled": false,
+      "description": null,
+      "guid": "1a3927d4de3147940978169728466746",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:bd89d81aa97cc4c3bae41eb53eba212b",
+      "options": {
+        "url": "https://httpbin.org/post",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "alert_id": "<<normalize_alert.alert_id>>",
+          "priority": "P1",
+          "severity": "<<normalize_alert.severity>>",
+          "source": "<<normalize_alert.source>>",
+          "enrichment_type": "high"
+        },
+        "emit_failure_event": false
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    }
+  ],
+  "diagram_notes": [],
+  "links": [
+    {
+      "source": 0,
+      "receiver": 1
+    },
+    {
+      "source": 1,
+      "receiver": 2
+    },
+    {
+      "source": 2,
+      "receiver": 5
+    },
+    {
+      "source": 2,
+      "receiver": 7,
+      "link_type": "secondary"
+    },
+    {
+      "source": 3,
+      "receiver": 10
+    },
+    {
+      "source": 5,
+      "receiver": 3,
+      "link_type": "secondary"
+    },
+    {
+      "source": 5,
+      "receiver": 6
+    },
+    {
+      "source": 6,
+      "receiver": 9
+    },
+    {
+      "source": 7,
+      "receiver": 4,
+      "link_type": "secondary"
+    },
+    {
+      "source": 7,
+      "receiver": 8
+    }
+  ],
+  "diagram_layout": "{\"1a3927d4de3147940978169728466746\":[720,1020],\"1b1a1e5fbf4f2c0b0449ef351761dbb8\":[375,300],\"28a635bd96c4748a44adee8de905238b\":[375,480],\"49372fef34a0aa4e398e72a10a79f1a3\":[375,1020],\"796e952f9acf637a24ce74e2a4b4041a\":[375,120],\"83bb047eae577512efe89befb3d5fb3e\":[720,840],\"8604fd92cb9965e10143c6d83f53436b\":[1410,840],\"8d4759183619ee7858afaf503fd4a151\":[1065,660],\"c04b759b5777f13b3049b4eb41008f47\":[1065,840],\"ce0a148f4ff196b90d4adb74c99c7d52\":[375,660],\"e3ab0e966f8986d887177677bc4189ea\":[375,840]}",
+  "story_library_metadata": {},
+  "monitor_failures": false,
+  "synchronous_webhooks_enabled": false,
+  "integrations": [],
+  "sections": [],
+  "parent_only_send_to_story": false,
+  "send_to_story_timeout_enabled": false,
+  "send_to_story_timeout_duration_seconds": null,
+  "keep_events_for": 86400,
+  "reporting_status": true,
+  "send_to_story_enabled": false,
+  "entry_agent_guid": null,
+  "exit_agent_guids": [],
+  "api_entry_action_guids": [],
+  "api_exit_action_guids": [],
+  "send_to_story_access": null,
+  "send_to_story_access_source": 0,
+  "send_to_story_skill_use_requires_confirmation": true,
+  "pages": [],
+  "tags": [],
+  "time_saved_unit": "minutes",
+  "time_saved_value": 0,
+  "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:35726c46dcc368118a64c8c39b4d1391",
+  "recipients": [
+    "user@applyready.dev"
+  ],
+  "integration_product": null,
+  "integration_vendor": null,
+  "llm_product_instructions": "",
+  "start_reference": null,
+  "app_endpoints": [],
+  "send_to_stories": [],
+  "exported_at": "2026-07-01T22:12:25Z"
+}
