@@ -57,8 +57,8 @@ Examples: `manual-playbook-runner`, `ransomware-response`, `cloud-misconfig-tria
 |---|---|---|
 | Credentials | None (httpbin only) | Can wire real APIs |
 | Webhook secret | Random per generate | From Tines UI |
-| Story IDs | `null` in catalog | Real tenant IDs after import |
-| Status in catalog | `generated-only` | `active` or `exported-only` |
+| Story IDs | Set in catalog (121699–121719) | Real tenant IDs after import |
+| Status in catalog | `imported` (disabled in tenant) | `active` or `exported-only` |
 
 Import any JSON via **Stories → Import**, copy the webhook URL to `.env`, run `scripts/test-<id>.sh`.
 

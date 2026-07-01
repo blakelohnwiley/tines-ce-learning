@@ -106,262 +106,262 @@ workflows:
   - id: email-ticket-router
     name: Email Ticket Router
     file: workflows/email-ticket-router.json
-    tenant_story_id: null
+    tenant_story_id: 121700
     flows: 1
     webhook_env: WEBHOOK_URL_EMAIL_TICKET_ROUTER
     webhook_path: email-ticket-router
     test_script: scripts/test-email-ticket-router.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 11
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121700; disabled — enable to swap onto CE budget."
 
   - id: manual-playbook-runner
     name: Manual Playbook Runner
     file: workflows/manual-playbook-runner.json
-    tenant_story_id: null
+    tenant_story_id: 121701
     flows: 1
     webhook_env: WEBHOOK_URL_MANUAL_PLAYBOOK_RUNNER
     webhook_path: manual-playbook-runner
     test_script: scripts/test-manual-playbook-runner.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 10
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121701; disabled — enable to swap onto CE budget."
 
   - id: batch-etl-pipeline
     name: Batch ETL Pipeline
     file: workflows/batch-etl-pipeline.json
-    tenant_story_id: null
+    tenant_story_id: 121702
     flows: 1
     webhook_env: WEBHOOK_URL_BATCH_ETL_PIPELINE
     webhook_path: batch-etl-pipeline
     test_script: scripts/test-batch-etl-pipeline.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 10
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121702; disabled — enable to swap onto CE budget."
 
   - id: case-management-stub
     name: Case Management Stub
     file: workflows/case-management-stub.json
-    tenant_story_id: null
+    tenant_story_id: 121703
     flows: 1
     webhook_env: WEBHOOK_URL_CASE_MANAGEMENT_STUB
     webhook_path: case-management-stub
     test_script: scripts/test-case-management-stub.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 11
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121703; disabled — enable to swap onto CE budget."
 
   - id: slack-notify-stub
     name: Slack Notify Stub
     file: workflows/slack-notify-stub.json
-    tenant_story_id: null
+    tenant_story_id: 121704
     flows: 1
     webhook_env: WEBHOOK_URL_SLACK_NOTIFY_STUB
     webhook_path: slack-notify-stub
     test_script: scripts/test-slack-notify-stub.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 11
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121704; disabled — enable to swap onto CE budget."
 
   - id: servicenow-incident-stub
     name: ServiceNow Incident Stub
     file: workflows/servicenow-incident-stub.json
-    tenant_story_id: null
+    tenant_story_id: 121705
     flows: 1
     webhook_env: WEBHOOK_URL_SERVICENOW_INCIDENT_STUB
     webhook_path: servicenow-incident-stub
     test_script: scripts/test-servicenow-incident-stub.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 11
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121705; disabled — enable to swap onto CE budget."
 
   - id: ai-summary-stub
     name: AI Summary Stub
     file: workflows/ai-summary-stub.json
-    tenant_story_id: null
+    tenant_story_id: 121706
     flows: 1
     webhook_env: WEBHOOK_URL_AI_SUMMARY_STUB
     webhook_path: ai-summary-stub
     test_script: scripts/test-ai-summary-stub.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 10
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121706; disabled — enable to swap onto CE budget."
 
   - id: phishing-analyzer
     name: Phishing Analyzer
     file: workflows/phishing-analyzer.json
-    tenant_story_id: null
+    tenant_story_id: 121699
     flows: 1
     webhook_env: WEBHOOK_URL_PHISHING_ANALYZER
     webhook_path: phishing-analyzer
     test_script: scripts/test-phishing-analyzer.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 11
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121699; disabled — enable to swap onto CE budget."
 
   - id: malware-hash-triage
     name: Malware Hash Triage
     file: workflows/malware-hash-triage.json
-    tenant_story_id: null
+    tenant_story_id: 121707
     flows: 1
     webhook_env: WEBHOOK_URL_MALWARE_HASH_TRIAGE
     webhook_path: malware-hash-triage
     test_script: scripts/test-malware-hash-triage.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 10
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121707; disabled — enable to swap onto CE budget."
 
   - id: user-risk-engine
     name: User Risk Engine
     file: workflows/user-risk-engine.json
-    tenant_story_id: null
+    tenant_story_id: 121708
     flows: 1
     webhook_env: WEBHOOK_URL_USER_RISK_ENGINE
     webhook_path: user-risk-engine
     test_script: scripts/test-user-risk-engine.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 11
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121708; disabled — enable to swap onto CE budget."
 
   - id: incident-correlator
     name: Incident Correlator
     file: workflows/incident-correlator.json
-    tenant_story_id: null
+    tenant_story_id: 121709
     flows: 1
     webhook_env: WEBHOOK_URL_INCIDENT_CORRELATOR
     webhook_path: incident-correlator
     test_script: scripts/test-incident-correlator.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 10
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121709; disabled — enable to swap onto CE budget."
 
   - id: vulnerability-scorer
     name: Vulnerability Scorer
     file: workflows/vulnerability-scorer.json
-    tenant_story_id: null
+    tenant_story_id: 121710
     flows: 1
     webhook_env: WEBHOOK_URL_VULNERABILITY_SCORER
     webhook_path: vulnerability-scorer
     test_script: scripts/test-vulnerability-scorer.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 11
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121710; disabled — enable to swap onto CE budget."
 
   - id: auth-anomaly-detector
     name: Auth Anomaly Detector
     file: workflows/auth-anomaly-detector.json
-    tenant_story_id: null
+    tenant_story_id: 121711
     flows: 1
     webhook_env: WEBHOOK_URL_AUTH_ANOMALY_DETECTOR
     webhook_path: auth-anomaly-detector
     test_script: scripts/test-auth-anomaly-detector.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 10
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121711; disabled — enable to swap onto CE budget."
 
   - id: exfil-monitor
     name: Exfil Monitor
     file: workflows/exfil-monitor.json
-    tenant_story_id: null
+    tenant_story_id: 121712
     flows: 1
     webhook_env: WEBHOOK_URL_EXFIL_MONITOR
     webhook_path: exfil-monitor
     test_script: scripts/test-exfil-monitor.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 11
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121712; disabled — enable to swap onto CE budget."
 
   - id: compliance-audit-chain
     name: Compliance Audit Chain
     file: workflows/compliance-audit-chain.json
-    tenant_story_id: null
+    tenant_story_id: 121713
     flows: 1
     webhook_env: WEBHOOK_URL_COMPLIANCE_AUDIT_CHAIN
     webhook_path: compliance-audit-chain
     test_script: scripts/test-compliance-audit-chain.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 10
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121713; disabled — enable to swap onto CE budget."
 
   - id: threat-intel-pipeline
     name: Threat Intel Pipeline
     file: workflows/threat-intel-pipeline.json
-    tenant_story_id: null
+    tenant_story_id: 121714
     flows: 1
     webhook_env: WEBHOOK_URL_THREAT_INTEL_PIPELINE
     webhook_path: threat-intel-pipeline
     test_script: scripts/test-threat-intel-pipeline.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 11
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121714; disabled — enable to swap onto CE budget."
 
   - id: ransomware-response
     name: Ransomware Response
     file: workflows/ransomware-response.json
-    tenant_story_id: null
+    tenant_story_id: 121715
     flows: 1
     webhook_env: WEBHOOK_URL_RANSOMWARE_RESPONSE
     webhook_path: ransomware-response
     test_script: scripts/test-ransomware-response.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 10
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121715; disabled — enable to swap onto CE budget."
 
   - id: insider-threat-analyzer
     name: Insider Threat Analyzer
     file: workflows/insider-threat-analyzer.json
-    tenant_story_id: null
+    tenant_story_id: 121716
     flows: 1
     webhook_env: WEBHOOK_URL_INSIDER_THREAT_ANALYZER
     webhook_path: insider-threat-analyzer
     test_script: scripts/test-insider-threat-analyzer.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 11
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121716; disabled — enable to swap onto CE budget."
 
   - id: cloud-misconfig-triage
     name: Cloud Misconfig Triage
     file: workflows/cloud-misconfig-triage.json
-    tenant_story_id: null
+    tenant_story_id: 121717
     flows: 1
     webhook_env: WEBHOOK_URL_CLOUD_MISCONFIG_TRIAGE
     webhook_path: cloud-misconfig-triage
     test_script: scripts/test-cloud-misconfig-triage.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 10
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121717; disabled — enable to swap onto CE budget."
 
   - id: supply-chain-scanner
     name: Supply Chain Scanner
     file: workflows/supply-chain-scanner.json
-    tenant_story_id: null
+    tenant_story_id: 121719
     flows: 1
     webhook_env: WEBHOOK_URL_SUPPLY_CHAIN_SCANNER
     webhook_path: supply-chain-scanner
     test_script: scripts/test-supply-chain-scanner.sh
-    status: generated-only
+    status: imported
     complexity: complex
     actions: 11
-    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+    notes: "Imported story 121719; disabled — enable to swap onto CE budget."
 
 story_library:
   - id: analyze-urls-fraud-abuse
@@ -377,6 +377,7 @@ library_stats:
   total_workflow_exports: 29
   complex_workflows: 21
   generated_complex_batch: 20
+  imported_complex_batch: 20
   standard_workflows: 8
 
 ce_budget:

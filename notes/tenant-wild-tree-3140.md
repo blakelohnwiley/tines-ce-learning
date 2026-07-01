@@ -19,6 +19,15 @@ Story 121670 expanded via Workbench:
 
 `receive_alert` → `normalize_alert` → `check_severity` → `escalate_alert` | `log_alert`
 
+## Imported complex batch (2026-07-01)
+
+Twenty generated workflows imported via UI; all **disabled** to keep CE at 2/3 active flows:
+
+- Active: **121670** (Your first story), **121679** (Alert Triage Advanced)
+- Imported disabled pool: **121699–121719** (see `exports/catalog.yaml`)
+
+To test one: enable story → copy webhook URL → update `.env` → run `scripts/test-<id>.sh`.
+
 ## Alert Triage Advanced (built 2026-07-01)
 
 Story 121679 — duplicate + extended (11 actions):

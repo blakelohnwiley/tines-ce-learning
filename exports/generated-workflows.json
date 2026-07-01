@@ -4,139 +4,179 @@
     "name": "Email Ticket Router",
     "file": "workflows/email-ticket-router.json",
     "actions": "11",
-    "env": "WEBHOOK_URL_EMAIL_TICKET_ROUTER"
+    "env": "WEBHOOK_URL_EMAIL_TICKET_ROUTER",
+    "tenant_story_id": 121700,
+    "status": "imported"
   },
   {
     "id": "manual-playbook-runner",
     "name": "Manual Playbook Runner",
     "file": "workflows/manual-playbook-runner.json",
     "actions": "10",
-    "env": "WEBHOOK_URL_MANUAL_PLAYBOOK_RUNNER"
+    "env": "WEBHOOK_URL_MANUAL_PLAYBOOK_RUNNER",
+    "tenant_story_id": 121701,
+    "status": "imported"
   },
   {
     "id": "batch-etl-pipeline",
     "name": "Batch ETL Pipeline",
     "file": "workflows/batch-etl-pipeline.json",
     "actions": "10",
-    "env": "WEBHOOK_URL_BATCH_ETL_PIPELINE"
+    "env": "WEBHOOK_URL_BATCH_ETL_PIPELINE",
+    "tenant_story_id": 121702,
+    "status": "imported"
   },
   {
     "id": "case-management-stub",
     "name": "Case Management Stub",
     "file": "workflows/case-management-stub.json",
     "actions": "11",
-    "env": "WEBHOOK_URL_CASE_MANAGEMENT_STUB"
+    "env": "WEBHOOK_URL_CASE_MANAGEMENT_STUB",
+    "tenant_story_id": 121703,
+    "status": "imported"
   },
   {
     "id": "slack-notify-stub",
     "name": "Slack Notify Stub",
     "file": "workflows/slack-notify-stub.json",
     "actions": "11",
-    "env": "WEBHOOK_URL_SLACK_NOTIFY_STUB"
+    "env": "WEBHOOK_URL_SLACK_NOTIFY_STUB",
+    "tenant_story_id": 121704,
+    "status": "imported"
   },
   {
     "id": "servicenow-incident-stub",
     "name": "ServiceNow Incident Stub",
     "file": "workflows/servicenow-incident-stub.json",
     "actions": "11",
-    "env": "WEBHOOK_URL_SERVICENOW_INCIDENT_STUB"
+    "env": "WEBHOOK_URL_SERVICENOW_INCIDENT_STUB",
+    "tenant_story_id": 121705,
+    "status": "imported"
   },
   {
     "id": "ai-summary-stub",
     "name": "AI Summary Stub",
     "file": "workflows/ai-summary-stub.json",
     "actions": "10",
-    "env": "WEBHOOK_URL_AI_SUMMARY_STUB"
+    "env": "WEBHOOK_URL_AI_SUMMARY_STUB",
+    "tenant_story_id": 121706,
+    "status": "imported"
   },
   {
     "id": "phishing-analyzer",
     "name": "Phishing Analyzer",
     "file": "workflows/phishing-analyzer.json",
     "actions": "11",
-    "env": "WEBHOOK_URL_PHISHING_ANALYZER"
+    "env": "WEBHOOK_URL_PHISHING_ANALYZER",
+    "tenant_story_id": 121699,
+    "status": "imported"
   },
   {
     "id": "malware-hash-triage",
     "name": "Malware Hash Triage",
     "file": "workflows/malware-hash-triage.json",
     "actions": "10",
-    "env": "WEBHOOK_URL_MALWARE_HASH_TRIAGE"
+    "env": "WEBHOOK_URL_MALWARE_HASH_TRIAGE",
+    "tenant_story_id": 121707,
+    "status": "imported"
   },
   {
     "id": "user-risk-engine",
     "name": "User Risk Engine",
     "file": "workflows/user-risk-engine.json",
     "actions": "11",
-    "env": "WEBHOOK_URL_USER_RISK_ENGINE"
+    "env": "WEBHOOK_URL_USER_RISK_ENGINE",
+    "tenant_story_id": 121708,
+    "status": "imported"
   },
   {
     "id": "incident-correlator",
     "name": "Incident Correlator",
     "file": "workflows/incident-correlator.json",
     "actions": "10",
-    "env": "WEBHOOK_URL_INCIDENT_CORRELATOR"
+    "env": "WEBHOOK_URL_INCIDENT_CORRELATOR",
+    "tenant_story_id": 121709,
+    "status": "imported"
   },
   {
     "id": "vulnerability-scorer",
     "name": "Vulnerability Scorer",
     "file": "workflows/vulnerability-scorer.json",
     "actions": "11",
-    "env": "WEBHOOK_URL_VULNERABILITY_SCORER"
+    "env": "WEBHOOK_URL_VULNERABILITY_SCORER",
+    "tenant_story_id": 121710,
+    "status": "imported"
   },
   {
     "id": "auth-anomaly-detector",
     "name": "Auth Anomaly Detector",
     "file": "workflows/auth-anomaly-detector.json",
     "actions": "10",
-    "env": "WEBHOOK_URL_AUTH_ANOMALY_DETECTOR"
+    "env": "WEBHOOK_URL_AUTH_ANOMALY_DETECTOR",
+    "tenant_story_id": 121711,
+    "status": "imported"
   },
   {
     "id": "exfil-monitor",
     "name": "Exfil Monitor",
     "file": "workflows/exfil-monitor.json",
     "actions": "11",
-    "env": "WEBHOOK_URL_EXFIL_MONITOR"
+    "env": "WEBHOOK_URL_EXFIL_MONITOR",
+    "tenant_story_id": 121712,
+    "status": "imported"
   },
   {
     "id": "compliance-audit-chain",
     "name": "Compliance Audit Chain",
     "file": "workflows/compliance-audit-chain.json",
     "actions": "10",
-    "env": "WEBHOOK_URL_COMPLIANCE_AUDIT_CHAIN"
+    "env": "WEBHOOK_URL_COMPLIANCE_AUDIT_CHAIN",
+    "tenant_story_id": 121713,
+    "status": "imported"
   },
   {
     "id": "threat-intel-pipeline",
     "name": "Threat Intel Pipeline",
     "file": "workflows/threat-intel-pipeline.json",
     "actions": "11",
-    "env": "WEBHOOK_URL_THREAT_INTEL_PIPELINE"
+    "env": "WEBHOOK_URL_THREAT_INTEL_PIPELINE",
+    "tenant_story_id": 121714,
+    "status": "imported"
   },
   {
     "id": "ransomware-response",
     "name": "Ransomware Response",
     "file": "workflows/ransomware-response.json",
     "actions": "10",
-    "env": "WEBHOOK_URL_RANSOMWARE_RESPONSE"
+    "env": "WEBHOOK_URL_RANSOMWARE_RESPONSE",
+    "tenant_story_id": 121715,
+    "status": "imported"
   },
   {
     "id": "insider-threat-analyzer",
     "name": "Insider Threat Analyzer",
     "file": "workflows/insider-threat-analyzer.json",
     "actions": "11",
-    "env": "WEBHOOK_URL_INSIDER_THREAT_ANALYZER"
+    "env": "WEBHOOK_URL_INSIDER_THREAT_ANALYZER",
+    "tenant_story_id": 121716,
+    "status": "imported"
   },
   {
     "id": "cloud-misconfig-triage",
     "name": "Cloud Misconfig Triage",
     "file": "workflows/cloud-misconfig-triage.json",
     "actions": "10",
-    "env": "WEBHOOK_URL_CLOUD_MISCONFIG_TRIAGE"
+    "env": "WEBHOOK_URL_CLOUD_MISCONFIG_TRIAGE",
+    "tenant_story_id": 121717,
+    "status": "imported"
   },
   {
     "id": "supply-chain-scanner",
     "name": "Supply Chain Scanner",
     "file": "workflows/supply-chain-scanner.json",
     "actions": "11",
-    "env": "WEBHOOK_URL_SUPPLY_CHAIN_SCANNER"
+    "env": "WEBHOOK_URL_SUPPLY_CHAIN_SCANNER",
+    "tenant_story_id": 121719,
+    "status": "imported"
   }
 ]
