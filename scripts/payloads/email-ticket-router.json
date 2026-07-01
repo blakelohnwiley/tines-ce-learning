@@ -1,0 +1,6 @@
+{
+  "ticket_id": "demo-email-ticket-router-001",
+  "severity": "high",
+  "source": "urgent",
+  "note": "Test payload for email-ticket-router"
+}

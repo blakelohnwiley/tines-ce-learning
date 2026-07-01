@@ -2,6 +2,8 @@
 
 Store JSON exports from your Tines tenant here. Exports are your **unlimited local library**; CE only allows **3 active flows** in the tenant at once.
 
+**Current library:** 29 workflow JSON files (2 active, 7 standard exported, 20 complex generated). See [docs/reference/workflow-catalog.md](../docs/reference/workflow-catalog.md).
+
 ## Layout
 
 ```

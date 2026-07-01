@@ -1,0 +1,467 @@
+{
+  "schema_version": 30,
+  "standard_lib_version": 92,
+  "action_runtime_version": 83,
+  "name": "Exfil Monitor",
+  "description": "Data exfiltration volume and severity routing.",
+  "guid": "7fda2c301f4342189a2c8184ce5b1cc0",
+  "slug": "exfil_monitor",
+  "agents": [
+    {
+      "type": "Agents::WebhookAgent",
+      "name": "data_transfer",
+      "disabled": false,
+      "description": null,
+      "guid": "75a32a495020421db11dbdae2b02a5b2",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:7fda2c301f4342189a2c8184ce5b1cc0",
+      "options": {
+        "path": "exfil-monitor",
+        "secret": "59f260d8b6e6c5f7bf0fc4dabd780998",
+        "verbs": "get,post"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "normalize_event",
+      "disabled": false,
+      "description": null,
+      "guid": "cd123affd60c4f0d964351bfb7802ff8",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:7fda2c301f4342189a2c8184ce5b1cc0",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "transfer_id": "<<data_transfer.body.transfer_id>>-<<data_transfer.id>>",
+          "severity": "<<data_transfer.body.severity>>",
+          "source": "<<data_transfer.body.source>>",
+          "received_at": "<<data_transfer.date>>",
+          "workflow": "exfil-monitor",
+          "normalized": true
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "check_severity",
+      "disabled": false,
+      "description": null,
+      "guid": "9770523be94c4471be31a372a42dff9a",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:7fda2c301f4342189a2c8184ce5b1cc0",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "high",
+            "path": "<<normalize_event.severity>>"
+          },
+          {
+            "type": "field==value",
+            "value": "critical",
+            "path": "<<normalize_event.severity>>"
+          }
+        ],
+        "must_match": 1
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "escalate_high",
+      "disabled": false,
+      "description": null,
+      "guid": "25ffd702770a41b9a8c5454706b6861e",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:7fda2c301f4342189a2c8184ce5b1cc0",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "escalate",
+          "priority": "P1",
+          "transfer_id": "<<normalize_event.transfer_id>>",
+          "severity": "<<normalize_event.severity>>",
+          "source": "<<normalize_event.source>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "log_standard",
+      "disabled": false,
+      "description": null,
+      "guid": "cfaa5bc70c1b4f4fb9774394c6afad9b",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:7fda2c301f4342189a2c8184ce5b1cc0",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "log",
+          "priority": "P4",
+          "transfer_id": "<<normalize_event.transfer_id>>",
+          "severity": "<<normalize_event.severity>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "check_critical",
+      "disabled": false,
+      "description": null,
+      "guid": "f46c3598294643a4bd342b365e809418",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:7fda2c301f4342189a2c8184ce5b1cc0",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "critical",
+            "path": "<<normalize_event.severity>>"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "escalate_critical",
+      "disabled": false,
+      "description": null,
+      "guid": "46c8e4f914804bbe9007424ba3d09df2",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:7fda2c301f4342189a2c8184ce5b1cc0",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "escalate",
+          "priority": "P0",
+          "transfer_id": "<<normalize_event.transfer_id>>",
+          "severity": "critical"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "check_source",
+      "disabled": false,
+      "description": null,
+      "guid": "f6f6650e7caf486694bcb311c3e1862c",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:7fda2c301f4342189a2c8184ce5b1cc0",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "sensitive",
+            "path": "<<normalize_event.source>>"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "audit_source_log",
+      "disabled": false,
+      "description": null,
+      "guid": "6fe25f46c8a7466da2b903bf29291c8c",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:7fda2c301f4342189a2c8184ce5b1cc0",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "audit",
+          "source": "sensitive",
+          "transfer_id": "<<normalize_event.transfer_id>>",
+          "priority": "P3"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "enrich_critical",
+      "disabled": false,
+      "description": null,
+      "guid": "8cdaa53e11e94d60b7473300ead23772",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:7fda2c301f4342189a2c8184ce5b1cc0",
+      "options": {
+        "url": "https://httpbin.org/post",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "priority": "P0",
+          "transfer_id": "<<normalize_event.transfer_id>>",
+          "stage": "critical_enrichment"
+        },
+        "emit_failure_event": false
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "enrich_high",
+      "disabled": false,
+      "description": null,
+      "guid": "e181e4e3de224b649b95e0642af52135",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:7fda2c301f4342189a2c8184ce5b1cc0",
+      "options": {
+        "url": "https://httpbin.org/post",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "priority": "P1",
+          "transfer_id": "<<normalize_event.transfer_id>>",
+          "stage": "high_enrichment"
+        },
+        "emit_failure_event": false
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    }
+  ],
+  "links": [
+    {
+      "source": 0,
+      "receiver": 1
+    },
+    {
+      "source": 1,
+      "receiver": 2
+    },
+    {
+      "source": 2,
+      "receiver": 5
+    },
+    {
+      "source": 2,
+      "receiver": 7,
+      "link_type": "secondary"
+    },
+    {
+      "source": 3,
+      "receiver": 10
+    },
+    {
+      "source": 5,
+      "receiver": 3,
+      "link_type": "secondary"
+    },
+    {
+      "source": 5,
+      "receiver": 6
+    },
+    {
+      "source": 6,
+      "receiver": 9
+    },
+    {
+      "source": 7,
+      "receiver": 4,
+      "link_type": "secondary"
+    },
+    {
+      "source": 7,
+      "receiver": 8
+    }
+  ],
+  "diagram_notes": [],
+  "story_library_metadata": {},
+  "monitor_failures": false,
+  "synchronous_webhooks_enabled": false,
+  "integrations": [],
+  "sections": [],
+  "parent_only_send_to_story": false,
+  "send_to_story_timeout_enabled": false,
+  "send_to_story_timeout_duration_seconds": null,
+  "keep_events_for": 86400,
+  "reporting_status": true,
+  "send_to_story_enabled": false,
+  "entry_agent_guid": null,
+  "exit_agent_guids": [],
+  "api_entry_action_guids": [],
+  "api_exit_action_guids": [],
+  "send_to_story_access": null,
+  "send_to_story_access_source": 0,
+  "send_to_story_skill_use_requires_confirmation": true,
+  "pages": [],
+  "tags": [],
+  "time_saved_unit": "minutes",
+  "time_saved_value": 0,
+  "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:7fda2c301f4342189a2c8184ce5b1cc0",
+  "recipients": [
+    "user@applyready.dev"
+  ],
+  "integration_product": null,
+  "integration_vendor": null,
+  "llm_product_instructions": "",
+  "start_reference": null,
+  "app_endpoints": [],
+  "send_to_stories": [],
+  "exported_at": "2026-07-01T22:37:29Z",
+  "diagram_layout": "{\"75a32a495020421db11dbdae2b02a5b2\": [105, 105], \"cd123affd60c4f0d964351bfb7802ff8\": [450, 105], \"9770523be94c4471be31a372a42dff9a\": [795, 105], \"25ffd702770a41b9a8c5454706b6861e\": [105, 285], \"cfaa5bc70c1b4f4fb9774394c6afad9b\": [450, 285], \"f46c3598294643a4bd342b365e809418\": [795, 285], \"46c8e4f914804bbe9007424ba3d09df2\": [105, 465], \"f6f6650e7caf486694bcb311c3e1862c\": [450, 465], \"6fe25f46c8a7466da2b903bf29291c8c\": [795, 465], \"8cdaa53e11e94d60b7473300ead23772\": [105, 645], \"e181e4e3de224b649b95e0642af52135\": [450, 645]}"
+}

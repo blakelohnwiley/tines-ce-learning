@@ -1,0 +1,6 @@
+{
+  "alert_id": "demo-slack-notify-stub-001",
+  "severity": "high",
+  "source": "slack",
+  "note": "Test payload for slack-notify-stub"
+}

@@ -9,6 +9,7 @@ Architecture diagrams for this repository. Edit the `.drawio` source in [draw.io
 | Diagram | Description | Source | PNG |
 |---|---|---|---|
 | CE flow strategy | Three live tenant slots vs unlimited local JSON library | [ce-flow-strategy.drawio](../diagrams/ce-flow-strategy.drawio) | [ce-flow-strategy.drawio.png](../diagrams/ce-flow-strategy.drawio.png) |
+| Workflow library overview | 29 exports: active, standard, complex generated | [workflow-library-overview.drawio](../diagrams/workflow-library-overview.drawio) | [workflow-library-overview.drawio.png](../diagrams/workflow-library-overview.drawio.png) |
 | Alert triage (base) | Webhook → normalize → severity branch | [alert-triage-base.drawio](../diagrams/alert-triage-base.drawio) | [alert-triage-base.drawio.png](../diagrams/alert-triage-base.drawio.png) |
 | Alert triage (advanced) | Nested conditions, HTTP enrichment, firewall path | [alert-triage-advanced.drawio](../diagrams/alert-triage-advanced.drawio) | [alert-triage-advanced.drawio.png](../diagrams/alert-triage-advanced.drawio.png) |
 | Repository layout | `docs/`, `exports/`, `scripts/`, `notes/` | [repo-layout.drawio](../diagrams/repo-layout.drawio) | [repo-layout.drawio.png](../diagrams/repo-layout.drawio.png) |

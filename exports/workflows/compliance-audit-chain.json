@@ -1,0 +1,411 @@
+{
+  "schema_version": 30,
+  "standard_lib_version": 92,
+  "action_runtime_version": 83,
+  "name": "Compliance Audit Chain",
+  "description": "Compliance event chain with throttle and HTTP audit log.",
+  "guid": "be52bb5cf2ac48aebb91f573a9e27702",
+  "slug": "compliance_audit_chain",
+  "agents": [
+    {
+      "type": "Agents::WebhookAgent",
+      "name": "audit_event",
+      "disabled": false,
+      "description": null,
+      "guid": "cd8d99116af94a03a34eff539641185d",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:be52bb5cf2ac48aebb91f573a9e27702",
+      "options": {
+        "path": "compliance-audit-chain",
+        "secret": "1aed082937eb71cb5a98bd4526b55cda",
+        "verbs": "get,post"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "normalize_input",
+      "disabled": false,
+      "description": null,
+      "guid": "9f8aea79cfa04cbd9f8f891cbc19a7da",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:be52bb5cf2ac48aebb91f573a9e27702",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "event_id": "<<audit_event.body.audit_id>>",
+          "severity": "<<audit_event.body.severity>>",
+          "category": "<<audit_event.body.category>>",
+          "received_at": "<<audit_event.date>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "dedupe_window",
+      "disabled": false,
+      "description": null,
+      "guid": "21cf24c5a65c4da781e725fa399f934f",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:be52bb5cf2ac48aebb91f573a9e27702",
+      "options": {
+        "mode": "deduplicate",
+        "loop": false,
+        "payload": {},
+        "path": "<<normalize_input.event_id>>",
+        "period": 300
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "rate_limit",
+      "disabled": false,
+      "description": null,
+      "guid": "9268b905a25b4e32aecc14781c2043ba",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:be52bb5cf2ac48aebb91f573a9e27702",
+      "options": {
+        "mode": "throttle",
+        "loop": false,
+        "payload": {},
+        "capacity": 5,
+        "interval": "minute"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "external_lookup",
+      "disabled": false,
+      "description": null,
+      "guid": "c5274ad11a1c4e50bf9b6a3ff50f9bde",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:be52bb5cf2ac48aebb91f573a9e27702",
+      "options": {
+        "url": "https://httpbin.org/post",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "event_id": "<<normalize_input.event_id>>",
+          "category": "<<normalize_input.category>>"
+        },
+        "emit_failure_event": false
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "check_severity",
+      "disabled": false,
+      "description": null,
+      "guid": "829629af233a4c7c9439a6271987d6e1",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:be52bb5cf2ac48aebb91f573a9e27702",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "high",
+            "path": "<<normalize_input.severity>>"
+          },
+          {
+            "type": "field==value",
+            "value": "critical",
+            "path": "<<normalize_input.severity>>"
+          }
+        ],
+        "must_match": 1
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "delay_processing",
+      "disabled": false,
+      "description": null,
+      "guid": "ab5c64974990467c999f90e87871e9c5",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:be52bb5cf2ac48aebb91f573a9e27702",
+      "options": {
+        "mode": "delay",
+        "loop": false,
+        "payload": {},
+        "seconds": 3
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "escalate",
+      "disabled": false,
+      "description": null,
+      "guid": "8439fb33c70345c58d218211df5e85f9",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:be52bb5cf2ac48aebb91f573a9e27702",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "escalate",
+          "event_id": "<<normalize_input.event_id>>",
+          "http_status": "<<external_lookup.status>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "standard_log",
+      "disabled": false,
+      "description": null,
+      "guid": "52bbbeafe7a44acba5ade2b0de86de96",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:be52bb5cf2ac48aebb91f573a9e27702",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "log",
+          "event_id": "<<normalize_input.event_id>>",
+          "http_status": "<<external_lookup.status>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "check_http_ok",
+      "disabled": false,
+      "description": null,
+      "guid": "27798b0fa0854e819a7bcad926adf9dc",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:be52bb5cf2ac48aebb91f573a9e27702",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "200",
+            "path": "<<external_lookup.status>>"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    }
+  ],
+  "links": [
+    {
+      "source": 0,
+      "receiver": 1
+    },
+    {
+      "source": 1,
+      "receiver": 2
+    },
+    {
+      "source": 2,
+      "receiver": 3
+    },
+    {
+      "source": 3,
+      "receiver": 4
+    },
+    {
+      "source": 4,
+      "receiver": 5
+    },
+    {
+      "source": 5,
+      "receiver": 6
+    },
+    {
+      "source": 6,
+      "receiver": 9
+    },
+    {
+      "source": 9,
+      "receiver": 7
+    },
+    {
+      "source": 9,
+      "receiver": 8,
+      "link_type": "secondary"
+    }
+  ],
+  "diagram_notes": [],
+  "story_library_metadata": {},
+  "monitor_failures": false,
+  "synchronous_webhooks_enabled": false,
+  "integrations": [],
+  "sections": [],
+  "parent_only_send_to_story": false,
+  "send_to_story_timeout_enabled": false,
+  "send_to_story_timeout_duration_seconds": null,
+  "keep_events_for": 86400,
+  "reporting_status": true,
+  "send_to_story_enabled": false,
+  "entry_agent_guid": null,
+  "exit_agent_guids": [],
+  "api_entry_action_guids": [],
+  "api_exit_action_guids": [],
+  "send_to_story_access": null,
+  "send_to_story_access_source": 0,
+  "send_to_story_skill_use_requires_confirmation": true,
+  "pages": [],
+  "tags": [],
+  "time_saved_unit": "minutes",
+  "time_saved_value": 0,
+  "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:be52bb5cf2ac48aebb91f573a9e27702",
+  "recipients": [
+    "user@applyready.dev"
+  ],
+  "integration_product": null,
+  "integration_vendor": null,
+  "llm_product_instructions": "",
+  "start_reference": null,
+  "app_endpoints": [],
+  "send_to_stories": [],
+  "exported_at": "2026-07-01T22:37:29Z",
+  "diagram_layout": "{\"cd8d99116af94a03a34eff539641185d\": [105, 105], \"9f8aea79cfa04cbd9f8f891cbc19a7da\": [375, 105], \"21cf24c5a65c4da781e725fa399f934f\": [645, 105], \"9268b905a25b4e32aecc14781c2043ba\": [915, 105], \"c5274ad11a1c4e50bf9b6a3ff50f9bde\": [105, 270], \"829629af233a4c7c9439a6271987d6e1\": [375, 270], \"ab5c64974990467c999f90e87871e9c5\": [645, 270], \"8439fb33c70345c58d218211df5e85f9\": [915, 270], \"52bbbeafe7a44acba5ade2b0de86de96\": [105, 435], \"27798b0fa0854e819a7bcad926adf9dc\": [375, 435]}"
+}

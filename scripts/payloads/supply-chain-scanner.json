@@ -1,0 +1,6 @@
+{
+  "package_id": "demo-supply-chain-scanner-001",
+  "severity": "high",
+  "source": "registry",
+  "note": "Test payload for supply-chain-scanner"
+}

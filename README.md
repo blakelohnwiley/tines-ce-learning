@@ -31,6 +31,8 @@ Structured docs follow the [Diátaxis framework](https://diataxis.fr/) — start
 
 Architecture diagrams (draw.io + PNG): [`docs/diagrams/`](docs/diagrams/).
 
+**Workflow library:** 29 JSON exports (20 complex generated, 8–11 actions each). Validate: `./scripts/validate-workflow-library.sh`
+
 ## Project structure
 
 ```

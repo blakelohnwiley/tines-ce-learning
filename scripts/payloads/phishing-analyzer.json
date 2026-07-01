@@ -1,0 +1,6 @@
+{
+  "message_id": "demo-phishing-analyzer-001",
+  "severity": "high",
+  "source": "phishing",
+  "note": "Test payload for phishing-analyzer"
+}

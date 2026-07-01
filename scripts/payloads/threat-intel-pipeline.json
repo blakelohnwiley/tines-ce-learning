@@ -1,0 +1,6 @@
+{
+  "indicator_id": "demo-threat-intel-pipeline-001",
+  "severity": "high",
+  "source": "feed",
+  "note": "Test payload for threat-intel-pipeline"
+}

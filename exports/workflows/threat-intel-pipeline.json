@@ -1,0 +1,467 @@
+{
+  "schema_version": 30,
+  "standard_lib_version": 92,
+  "action_runtime_version": 83,
+  "name": "Threat Intel Pipeline",
+  "description": "IOC enrichment with nested severity routing.",
+  "guid": "1b7fd9aed2f147178f40dfb7a70b5337",
+  "slug": "threat_intel_pipeline",
+  "agents": [
+    {
+      "type": "Agents::WebhookAgent",
+      "name": "intel_indicator",
+      "disabled": false,
+      "description": null,
+      "guid": "46838a62e9894dc28401b55355dd324c",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:1b7fd9aed2f147178f40dfb7a70b5337",
+      "options": {
+        "path": "threat-intel-pipeline",
+        "secret": "9fb885bace8e7d75e2f6cbc226394e90",
+        "verbs": "get,post"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "normalize_event",
+      "disabled": false,
+      "description": null,
+      "guid": "66df4e59fe92416aa16c9a81d10a1b3c",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:1b7fd9aed2f147178f40dfb7a70b5337",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "indicator_id": "<<intel_indicator.body.indicator_id>>-<<intel_indicator.id>>",
+          "severity": "<<intel_indicator.body.severity>>",
+          "source": "<<intel_indicator.body.source>>",
+          "received_at": "<<intel_indicator.date>>",
+          "workflow": "threat-intel-pipeline",
+          "normalized": true
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "check_severity",
+      "disabled": false,
+      "description": null,
+      "guid": "3e2ee84a748c44f391ac608f43ee07d6",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:1b7fd9aed2f147178f40dfb7a70b5337",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "high",
+            "path": "<<normalize_event.severity>>"
+          },
+          {
+            "type": "field==value",
+            "value": "critical",
+            "path": "<<normalize_event.severity>>"
+          }
+        ],
+        "must_match": 1
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "escalate_high",
+      "disabled": false,
+      "description": null,
+      "guid": "d1d3fe7780c24c30a2fce7e087b0c870",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:1b7fd9aed2f147178f40dfb7a70b5337",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "escalate",
+          "priority": "P1",
+          "indicator_id": "<<normalize_event.indicator_id>>",
+          "severity": "<<normalize_event.severity>>",
+          "source": "<<normalize_event.source>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "log_standard",
+      "disabled": false,
+      "description": null,
+      "guid": "5d4ea06e2a0340c28a05f6eb872c129a",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:1b7fd9aed2f147178f40dfb7a70b5337",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "log",
+          "priority": "P4",
+          "indicator_id": "<<normalize_event.indicator_id>>",
+          "severity": "<<normalize_event.severity>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "check_critical",
+      "disabled": false,
+      "description": null,
+      "guid": "3b1a200bee25494faa1dd72fd823e201",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:1b7fd9aed2f147178f40dfb7a70b5337",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "critical",
+            "path": "<<normalize_event.severity>>"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "escalate_critical",
+      "disabled": false,
+      "description": null,
+      "guid": "b7b4a4dd632b4e47843e57f80ecd2d7a",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:1b7fd9aed2f147178f40dfb7a70b5337",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "escalate",
+          "priority": "P0",
+          "indicator_id": "<<normalize_event.indicator_id>>",
+          "severity": "critical"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "check_source",
+      "disabled": false,
+      "description": null,
+      "guid": "7ecf0179590a40308aa8f6efaee78cb5",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:1b7fd9aed2f147178f40dfb7a70b5337",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "feed",
+            "path": "<<normalize_event.source>>"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "audit_source_log",
+      "disabled": false,
+      "description": null,
+      "guid": "ec81f02d2f1b4514a2fa893d9e436fed",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:1b7fd9aed2f147178f40dfb7a70b5337",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "audit",
+          "source": "feed",
+          "indicator_id": "<<normalize_event.indicator_id>>",
+          "priority": "P3"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "enrich_critical",
+      "disabled": false,
+      "description": null,
+      "guid": "56b0c9ed19c347bba2e67b4f161d95da",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:1b7fd9aed2f147178f40dfb7a70b5337",
+      "options": {
+        "url": "https://httpbin.org/post",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "priority": "P0",
+          "indicator_id": "<<normalize_event.indicator_id>>",
+          "stage": "critical_enrichment"
+        },
+        "emit_failure_event": false
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "enrich_high",
+      "disabled": false,
+      "description": null,
+      "guid": "19366acfb6af48f6a1126d93075ffa57",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:1b7fd9aed2f147178f40dfb7a70b5337",
+      "options": {
+        "url": "https://httpbin.org/post",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "priority": "P1",
+          "indicator_id": "<<normalize_event.indicator_id>>",
+          "stage": "high_enrichment"
+        },
+        "emit_failure_event": false
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    }
+  ],
+  "links": [
+    {
+      "source": 0,
+      "receiver": 1
+    },
+    {
+      "source": 1,
+      "receiver": 2
+    },
+    {
+      "source": 2,
+      "receiver": 5
+    },
+    {
+      "source": 2,
+      "receiver": 7,
+      "link_type": "secondary"
+    },
+    {
+      "source": 3,
+      "receiver": 10
+    },
+    {
+      "source": 5,
+      "receiver": 3,
+      "link_type": "secondary"
+    },
+    {
+      "source": 5,
+      "receiver": 6
+    },
+    {
+      "source": 6,
+      "receiver": 9
+    },
+    {
+      "source": 7,
+      "receiver": 4,
+      "link_type": "secondary"
+    },
+    {
+      "source": 7,
+      "receiver": 8
+    }
+  ],
+  "diagram_notes": [],
+  "story_library_metadata": {},
+  "monitor_failures": false,
+  "synchronous_webhooks_enabled": false,
+  "integrations": [],
+  "sections": [],
+  "parent_only_send_to_story": false,
+  "send_to_story_timeout_enabled": false,
+  "send_to_story_timeout_duration_seconds": null,
+  "keep_events_for": 86400,
+  "reporting_status": true,
+  "send_to_story_enabled": false,
+  "entry_agent_guid": null,
+  "exit_agent_guids": [],
+  "api_entry_action_guids": [],
+  "api_exit_action_guids": [],
+  "send_to_story_access": null,
+  "send_to_story_access_source": 0,
+  "send_to_story_skill_use_requires_confirmation": true,
+  "pages": [],
+  "tags": [],
+  "time_saved_unit": "minutes",
+  "time_saved_value": 0,
+  "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:1b7fd9aed2f147178f40dfb7a70b5337",
+  "recipients": [
+    "user@applyready.dev"
+  ],
+  "integration_product": null,
+  "integration_vendor": null,
+  "llm_product_instructions": "",
+  "start_reference": null,
+  "app_endpoints": [],
+  "send_to_stories": [],
+  "exported_at": "2026-07-01T22:37:29Z",
+  "diagram_layout": "{\"46838a62e9894dc28401b55355dd324c\": [105, 105], \"66df4e59fe92416aa16c9a81d10a1b3c\": [450, 105], \"3e2ee84a748c44f391ac608f43ee07d6\": [795, 105], \"d1d3fe7780c24c30a2fce7e087b0c870\": [105, 285], \"5d4ea06e2a0340c28a05f6eb872c129a\": [450, 285], \"3b1a200bee25494faa1dd72fd823e201\": [795, 285], \"b7b4a4dd632b4e47843e57f80ecd2d7a\": [105, 465], \"7ecf0179590a40308aa8f6efaee78cb5\": [450, 465], \"ec81f02d2f1b4514a2fa893d9e436fed\": [795, 465], \"56b0c9ed19c347bba2e67b4f161d95da\": [105, 645], \"19366acfb6af48f6a1126d93075ffa57\": [450, 645]}"
+}

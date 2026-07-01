@@ -11,6 +11,7 @@ workflows:
     webhook_path: your-first-story
     test_script: scripts/test-both-branches.sh
     status: active
+    complexity: standard
 
   - id: alert-triage-advanced
     name: Alert Triage Advanced
@@ -21,6 +22,8 @@ workflows:
     webhook_path: alert-triage-advanced
     test_script: scripts/test-advanced-branches.sh
     status: active
+    complexity: complex
+    actions: 11
 
   - id: scheduled-heartbeat
     name: Scheduled Heartbeat
@@ -30,8 +33,9 @@ workflows:
     webhook_env: null
     trigger: schedule
     schedule: "*/15 * * * *"
-    notes: "Schedule trigger via cron; Workbench used HTTP GET to httpbin as entry — re-import and enable to run."
+    notes: "Schedule trigger via cron; re-import and enable to run."
     status: exported-only
+    complexity: standard
 
   - id: ip-enrichment
     name: IP Enrichment
@@ -42,6 +46,7 @@ workflows:
     webhook_path: ip-enrichment
     test_script: scripts/test-ip-enrichment.sh
     status: exported-only
+    complexity: standard
 
   - id: url-reputation-check
     name: URL Reputation Check
@@ -52,6 +57,7 @@ workflows:
     webhook_path: url-reputation-check
     test_script: scripts/test-url-reputation.sh
     status: exported-only
+    complexity: standard
 
   - id: dedup-alerts
     name: Dedup Alerts
@@ -62,6 +68,7 @@ workflows:
     webhook_path: dedup-alerts
     test_script: scripts/test-dedup-alerts.sh
     status: exported-only
+    complexity: standard
 
   - id: throttle-demo
     name: Throttle Demo
@@ -72,6 +79,7 @@ workflows:
     webhook_path: throttle-demo
     test_script: scripts/test-throttle-demo.sh
     status: exported-only
+    complexity: standard
 
   - id: delay-retry
     name: Delay Retry
@@ -82,6 +90,7 @@ workflows:
     webhook_path: delay-retry
     test_script: scripts/test-delay-retry.sh
     status: exported-only
+    complexity: standard
 
   - id: geo-block-gate
     name: Geo Block Gate
@@ -92,6 +101,267 @@ workflows:
     webhook_path: geo-block-gate
     test_script: scripts/test-geo-block-gate.sh
     status: exported-only
+    complexity: standard
+
+  - id: email-ticket-router
+    name: Email Ticket Router
+    file: workflows/email-ticket-router.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_EMAIL_TICKET_ROUTER
+    webhook_path: email-ticket-router
+    test_script: scripts/test-email-ticket-router.sh
+    status: generated-only
+    complexity: complex
+    actions: 11
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: manual-playbook-runner
+    name: Manual Playbook Runner
+    file: workflows/manual-playbook-runner.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_MANUAL_PLAYBOOK_RUNNER
+    webhook_path: manual-playbook-runner
+    test_script: scripts/test-manual-playbook-runner.sh
+    status: generated-only
+    complexity: complex
+    actions: 10
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: batch-etl-pipeline
+    name: Batch ETL Pipeline
+    file: workflows/batch-etl-pipeline.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_BATCH_ETL_PIPELINE
+    webhook_path: batch-etl-pipeline
+    test_script: scripts/test-batch-etl-pipeline.sh
+    status: generated-only
+    complexity: complex
+    actions: 10
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: case-management-stub
+    name: Case Management Stub
+    file: workflows/case-management-stub.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_CASE_MANAGEMENT_STUB
+    webhook_path: case-management-stub
+    test_script: scripts/test-case-management-stub.sh
+    status: generated-only
+    complexity: complex
+    actions: 11
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: slack-notify-stub
+    name: Slack Notify Stub
+    file: workflows/slack-notify-stub.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_SLACK_NOTIFY_STUB
+    webhook_path: slack-notify-stub
+    test_script: scripts/test-slack-notify-stub.sh
+    status: generated-only
+    complexity: complex
+    actions: 11
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: servicenow-incident-stub
+    name: ServiceNow Incident Stub
+    file: workflows/servicenow-incident-stub.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_SERVICENOW_INCIDENT_STUB
+    webhook_path: servicenow-incident-stub
+    test_script: scripts/test-servicenow-incident-stub.sh
+    status: generated-only
+    complexity: complex
+    actions: 11
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: ai-summary-stub
+    name: AI Summary Stub
+    file: workflows/ai-summary-stub.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_AI_SUMMARY_STUB
+    webhook_path: ai-summary-stub
+    test_script: scripts/test-ai-summary-stub.sh
+    status: generated-only
+    complexity: complex
+    actions: 10
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: phishing-analyzer
+    name: Phishing Analyzer
+    file: workflows/phishing-analyzer.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_PHISHING_ANALYZER
+    webhook_path: phishing-analyzer
+    test_script: scripts/test-phishing-analyzer.sh
+    status: generated-only
+    complexity: complex
+    actions: 11
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: malware-hash-triage
+    name: Malware Hash Triage
+    file: workflows/malware-hash-triage.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_MALWARE_HASH_TRIAGE
+    webhook_path: malware-hash-triage
+    test_script: scripts/test-malware-hash-triage.sh
+    status: generated-only
+    complexity: complex
+    actions: 10
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: user-risk-engine
+    name: User Risk Engine
+    file: workflows/user-risk-engine.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_USER_RISK_ENGINE
+    webhook_path: user-risk-engine
+    test_script: scripts/test-user-risk-engine.sh
+    status: generated-only
+    complexity: complex
+    actions: 11
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: incident-correlator
+    name: Incident Correlator
+    file: workflows/incident-correlator.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_INCIDENT_CORRELATOR
+    webhook_path: incident-correlator
+    test_script: scripts/test-incident-correlator.sh
+    status: generated-only
+    complexity: complex
+    actions: 10
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: vulnerability-scorer
+    name: Vulnerability Scorer
+    file: workflows/vulnerability-scorer.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_VULNERABILITY_SCORER
+    webhook_path: vulnerability-scorer
+    test_script: scripts/test-vulnerability-scorer.sh
+    status: generated-only
+    complexity: complex
+    actions: 11
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: auth-anomaly-detector
+    name: Auth Anomaly Detector
+    file: workflows/auth-anomaly-detector.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_AUTH_ANOMALY_DETECTOR
+    webhook_path: auth-anomaly-detector
+    test_script: scripts/test-auth-anomaly-detector.sh
+    status: generated-only
+    complexity: complex
+    actions: 10
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: exfil-monitor
+    name: Exfil Monitor
+    file: workflows/exfil-monitor.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_EXFIL_MONITOR
+    webhook_path: exfil-monitor
+    test_script: scripts/test-exfil-monitor.sh
+    status: generated-only
+    complexity: complex
+    actions: 11
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: compliance-audit-chain
+    name: Compliance Audit Chain
+    file: workflows/compliance-audit-chain.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_COMPLIANCE_AUDIT_CHAIN
+    webhook_path: compliance-audit-chain
+    test_script: scripts/test-compliance-audit-chain.sh
+    status: generated-only
+    complexity: complex
+    actions: 10
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: threat-intel-pipeline
+    name: Threat Intel Pipeline
+    file: workflows/threat-intel-pipeline.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_THREAT_INTEL_PIPELINE
+    webhook_path: threat-intel-pipeline
+    test_script: scripts/test-threat-intel-pipeline.sh
+    status: generated-only
+    complexity: complex
+    actions: 11
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: ransomware-response
+    name: Ransomware Response
+    file: workflows/ransomware-response.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_RANSOMWARE_RESPONSE
+    webhook_path: ransomware-response
+    test_script: scripts/test-ransomware-response.sh
+    status: generated-only
+    complexity: complex
+    actions: 10
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: insider-threat-analyzer
+    name: Insider Threat Analyzer
+    file: workflows/insider-threat-analyzer.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_INSIDER_THREAT_ANALYZER
+    webhook_path: insider-threat-analyzer
+    test_script: scripts/test-insider-threat-analyzer.sh
+    status: generated-only
+    complexity: complex
+    actions: 11
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: cloud-misconfig-triage
+    name: Cloud Misconfig Triage
+    file: workflows/cloud-misconfig-triage.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_CLOUD_MISCONFIG_TRIAGE
+    webhook_path: cloud-misconfig-triage
+    test_script: scripts/test-cloud-misconfig-triage.sh
+    status: generated-only
+    complexity: complex
+    actions: 10
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
+
+  - id: supply-chain-scanner
+    name: Supply Chain Scanner
+    file: workflows/supply-chain-scanner.json
+    tenant_story_id: null
+    flows: 1
+    webhook_env: WEBHOOK_URL_SUPPLY_CHAIN_SCANNER
+    webhook_path: supply-chain-scanner
+    test_script: scripts/test-supply-chain-scanner.sh
+    status: generated-only
+    complexity: complex
+    actions: 11
+    notes: "Generated JSON — import to tenant to run; not yet live in CE."
 
 story_library:
   - id: analyze-urls-fraud-abuse
@@ -103,29 +373,11 @@ story_library:
     credentials: [Zendesk]
     status: exported-only
 
-# Tier 3+ — not yet built; see exports/workflows/BUILD.md for Workbench prompts
-planned:
-  - id: email-to-ticket-stub
-    tier: 1
-    status: planned
-  - id: manual-run-playbook
-    tier: 1
-    status: planned
-  - id: multi-step-etl
-    tier: 2
-    status: planned
-  - id: case-record-stub
-    tier: 2
-    status: planned
-  - id: slack-alert-notify
-    tier: 3
-    status: planned
-  - id: servicenow-incident
-    tier: 3
-    status: planned
-  - id: ai-alert-summarizer
-    tier: 4
-    status: planned
+library_stats:
+  total_workflow_exports: 29
+  complex_workflows: 21
+  generated_complex_batch: 20
+  standard_workflows: 8
 
 ce_budget:
   max_active_flows: 3

@@ -1,0 +1,6 @@
+{
+  "user_id": "demo-user-risk-engine-001",
+  "severity": "high",
+  "source": "vpn",
+  "note": "Test payload for user-risk-engine"
+}

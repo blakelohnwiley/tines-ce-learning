@@ -1,0 +1,411 @@
+{
+  "schema_version": 30,
+  "standard_lib_version": 92,
+  "action_runtime_version": 83,
+  "name": "Ransomware Response",
+  "description": "Ransomware indicator response with immediate escalation path.",
+  "guid": "953da641a34747278c116e0aead205c8",
+  "slug": "ransomware_response",
+  "agents": [
+    {
+      "type": "Agents::WebhookAgent",
+      "name": "ransomware_signal",
+      "disabled": false,
+      "description": null,
+      "guid": "34748fcf18b842538ae9875f7c38ceb7",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:953da641a34747278c116e0aead205c8",
+      "options": {
+        "path": "ransomware-response",
+        "secret": "7ae8bec875cbccba303a6c6307eee54f",
+        "verbs": "get,post"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "normalize_input",
+      "disabled": false,
+      "description": null,
+      "guid": "cc0392d1b51040e89402fec44858de8b",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:953da641a34747278c116e0aead205c8",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "event_id": "<<ransomware_signal.body.signal_id>>",
+          "severity": "<<ransomware_signal.body.severity>>",
+          "category": "<<ransomware_signal.body.category>>",
+          "received_at": "<<ransomware_signal.date>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "dedupe_window",
+      "disabled": false,
+      "description": null,
+      "guid": "994c76d4447343d78f324f86e40f7b76",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:953da641a34747278c116e0aead205c8",
+      "options": {
+        "mode": "deduplicate",
+        "loop": false,
+        "payload": {},
+        "path": "<<normalize_input.event_id>>",
+        "period": 300
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "rate_limit",
+      "disabled": false,
+      "description": null,
+      "guid": "24cc84b4e6114ead82a5aaae282ad39e",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:953da641a34747278c116e0aead205c8",
+      "options": {
+        "mode": "throttle",
+        "loop": false,
+        "payload": {},
+        "capacity": 5,
+        "interval": "minute"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "external_lookup",
+      "disabled": false,
+      "description": null,
+      "guid": "708839b4c3304fc699f292c77a76cd0a",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:953da641a34747278c116e0aead205c8",
+      "options": {
+        "url": "https://httpbin.org/post",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "event_id": "<<normalize_input.event_id>>",
+          "category": "<<normalize_input.category>>"
+        },
+        "emit_failure_event": false
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "check_severity",
+      "disabled": false,
+      "description": null,
+      "guid": "1ef524532aca445099967b049a1796ed",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:953da641a34747278c116e0aead205c8",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "high",
+            "path": "<<normalize_input.severity>>"
+          },
+          {
+            "type": "field==value",
+            "value": "critical",
+            "path": "<<normalize_input.severity>>"
+          }
+        ],
+        "must_match": 1
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "delay_processing",
+      "disabled": false,
+      "description": null,
+      "guid": "454901416a31486e9467fe6590a2694c",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:953da641a34747278c116e0aead205c8",
+      "options": {
+        "mode": "delay",
+        "loop": false,
+        "payload": {},
+        "seconds": 3
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "escalate",
+      "disabled": false,
+      "description": null,
+      "guid": "4597dbe3d15841e89a07a309de246969",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:953da641a34747278c116e0aead205c8",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "escalate",
+          "event_id": "<<normalize_input.event_id>>",
+          "http_status": "<<external_lookup.status>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "standard_log",
+      "disabled": false,
+      "description": null,
+      "guid": "84090f69f2474bb992e38429eb9f824a",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:953da641a34747278c116e0aead205c8",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "log",
+          "event_id": "<<normalize_input.event_id>>",
+          "http_status": "<<external_lookup.status>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "check_http_ok",
+      "disabled": false,
+      "description": null,
+      "guid": "900355943c6d4107881450bbd3ec481c",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:953da641a34747278c116e0aead205c8",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "200",
+            "path": "<<external_lookup.status>>"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    }
+  ],
+  "links": [
+    {
+      "source": 0,
+      "receiver": 1
+    },
+    {
+      "source": 1,
+      "receiver": 2
+    },
+    {
+      "source": 2,
+      "receiver": 3
+    },
+    {
+      "source": 3,
+      "receiver": 4
+    },
+    {
+      "source": 4,
+      "receiver": 5
+    },
+    {
+      "source": 5,
+      "receiver": 6
+    },
+    {
+      "source": 6,
+      "receiver": 9
+    },
+    {
+      "source": 9,
+      "receiver": 7
+    },
+    {
+      "source": 9,
+      "receiver": 8,
+      "link_type": "secondary"
+    }
+  ],
+  "diagram_notes": [],
+  "story_library_metadata": {},
+  "monitor_failures": false,
+  "synchronous_webhooks_enabled": false,
+  "integrations": [],
+  "sections": [],
+  "parent_only_send_to_story": false,
+  "send_to_story_timeout_enabled": false,
+  "send_to_story_timeout_duration_seconds": null,
+  "keep_events_for": 86400,
+  "reporting_status": true,
+  "send_to_story_enabled": false,
+  "entry_agent_guid": null,
+  "exit_agent_guids": [],
+  "api_entry_action_guids": [],
+  "api_exit_action_guids": [],
+  "send_to_story_access": null,
+  "send_to_story_access_source": 0,
+  "send_to_story_skill_use_requires_confirmation": true,
+  "pages": [],
+  "tags": [],
+  "time_saved_unit": "minutes",
+  "time_saved_value": 0,
+  "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:953da641a34747278c116e0aead205c8",
+  "recipients": [
+    "user@applyready.dev"
+  ],
+  "integration_product": null,
+  "integration_vendor": null,
+  "llm_product_instructions": "",
+  "start_reference": null,
+  "app_endpoints": [],
+  "send_to_stories": [],
+  "exported_at": "2026-07-01T22:37:29Z",
+  "diagram_layout": "{\"34748fcf18b842538ae9875f7c38ceb7\": [105, 105], \"cc0392d1b51040e89402fec44858de8b\": [375, 105], \"994c76d4447343d78f324f86e40f7b76\": [645, 105], \"24cc84b4e6114ead82a5aaae282ad39e\": [915, 105], \"708839b4c3304fc699f292c77a76cd0a\": [105, 270], \"1ef524532aca445099967b049a1796ed\": [375, 270], \"454901416a31486e9467fe6590a2694c\": [645, 270], \"4597dbe3d15841e89a07a309de246969\": [915, 270], \"84090f69f2474bb992e38429eb9f824a\": [105, 435], \"900355943c6d4107881450bbd3ec481c\": [375, 435]}"
+}

@@ -1,0 +1,6 @@
+{
+  "incident_id": "demo-servicenow-incident-stub-001",
+  "severity": "high",
+  "source": "servicenow",
+  "note": "Test payload for servicenow-incident-stub"
+}

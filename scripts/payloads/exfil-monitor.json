@@ -1,0 +1,6 @@
+{
+  "transfer_id": "demo-exfil-monitor-001",
+  "severity": "high",
+  "source": "sensitive",
+  "note": "Test payload for exfil-monitor"
+}

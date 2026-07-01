@@ -1,0 +1,5 @@
+{
+  "correlation_id": "demo-incident-correlator-001",
+  "severity": "high",
+  "category": "incident-correlator"
+}

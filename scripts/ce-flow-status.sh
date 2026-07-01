@@ -29,4 +29,5 @@ fi
 
 echo ""
 echo "Swap pattern: Export → Disable/Archive in tenant → Import next JSON"
-echo "Docs: notes/05-workflow-catalog-and-ce-strategy.md"
+echo "Docs: docs/README.md"
+echo "Validate library: ./scripts/validate-workflow-library.sh"

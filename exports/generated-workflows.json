@@ -1,0 +1,142 @@
+[
+  {
+    "id": "email-ticket-router",
+    "name": "Email Ticket Router",
+    "file": "workflows/email-ticket-router.json",
+    "actions": "11",
+    "env": "WEBHOOK_URL_EMAIL_TICKET_ROUTER"
+  },
+  {
+    "id": "manual-playbook-runner",
+    "name": "Manual Playbook Runner",
+    "file": "workflows/manual-playbook-runner.json",
+    "actions": "10",
+    "env": "WEBHOOK_URL_MANUAL_PLAYBOOK_RUNNER"
+  },
+  {
+    "id": "batch-etl-pipeline",
+    "name": "Batch ETL Pipeline",
+    "file": "workflows/batch-etl-pipeline.json",
+    "actions": "10",
+    "env": "WEBHOOK_URL_BATCH_ETL_PIPELINE"
+  },
+  {
+    "id": "case-management-stub",
+    "name": "Case Management Stub",
+    "file": "workflows/case-management-stub.json",
+    "actions": "11",
+    "env": "WEBHOOK_URL_CASE_MANAGEMENT_STUB"
+  },
+  {
+    "id": "slack-notify-stub",
+    "name": "Slack Notify Stub",
+    "file": "workflows/slack-notify-stub.json",
+    "actions": "11",
+    "env": "WEBHOOK_URL_SLACK_NOTIFY_STUB"
+  },
+  {
+    "id": "servicenow-incident-stub",
+    "name": "ServiceNow Incident Stub",
+    "file": "workflows/servicenow-incident-stub.json",
+    "actions": "11",
+    "env": "WEBHOOK_URL_SERVICENOW_INCIDENT_STUB"
+  },
+  {
+    "id": "ai-summary-stub",
+    "name": "AI Summary Stub",
+    "file": "workflows/ai-summary-stub.json",
+    "actions": "10",
+    "env": "WEBHOOK_URL_AI_SUMMARY_STUB"
+  },
+  {
+    "id": "phishing-analyzer",
+    "name": "Phishing Analyzer",
+    "file": "workflows/phishing-analyzer.json",
+    "actions": "11",
+    "env": "WEBHOOK_URL_PHISHING_ANALYZER"
+  },
+  {
+    "id": "malware-hash-triage",
+    "name": "Malware Hash Triage",
+    "file": "workflows/malware-hash-triage.json",
+    "actions": "10",
+    "env": "WEBHOOK_URL_MALWARE_HASH_TRIAGE"
+  },
+  {
+    "id": "user-risk-engine",
+    "name": "User Risk Engine",
+    "file": "workflows/user-risk-engine.json",
+    "actions": "11",
+    "env": "WEBHOOK_URL_USER_RISK_ENGINE"
+  },
+  {
+    "id": "incident-correlator",
+    "name": "Incident Correlator",
+    "file": "workflows/incident-correlator.json",
+    "actions": "10",
+    "env": "WEBHOOK_URL_INCIDENT_CORRELATOR"
+  },
+  {
+    "id": "vulnerability-scorer",
+    "name": "Vulnerability Scorer",
+    "file": "workflows/vulnerability-scorer.json",
+    "actions": "11",
+    "env": "WEBHOOK_URL_VULNERABILITY_SCORER"
+  },
+  {
+    "id": "auth-anomaly-detector",
+    "name": "Auth Anomaly Detector",
+    "file": "workflows/auth-anomaly-detector.json",
+    "actions": "10",
+    "env": "WEBHOOK_URL_AUTH_ANOMALY_DETECTOR"
+  },
+  {
+    "id": "exfil-monitor",
+    "name": "Exfil Monitor",
+    "file": "workflows/exfil-monitor.json",
+    "actions": "11",
+    "env": "WEBHOOK_URL_EXFIL_MONITOR"
+  },
+  {
+    "id": "compliance-audit-chain",
+    "name": "Compliance Audit Chain",
+    "file": "workflows/compliance-audit-chain.json",
+    "actions": "10",
+    "env": "WEBHOOK_URL_COMPLIANCE_AUDIT_CHAIN"
+  },
+  {
+    "id": "threat-intel-pipeline",
+    "name": "Threat Intel Pipeline",
+    "file": "workflows/threat-intel-pipeline.json",
+    "actions": "11",
+    "env": "WEBHOOK_URL_THREAT_INTEL_PIPELINE"
+  },
+  {
+    "id": "ransomware-response",
+    "name": "Ransomware Response",
+    "file": "workflows/ransomware-response.json",
+    "actions": "10",
+    "env": "WEBHOOK_URL_RANSOMWARE_RESPONSE"
+  },
+  {
+    "id": "insider-threat-analyzer",
+    "name": "Insider Threat Analyzer",
+    "file": "workflows/insider-threat-analyzer.json",
+    "actions": "11",
+    "env": "WEBHOOK_URL_INSIDER_THREAT_ANALYZER"
+  },
+  {
+    "id": "cloud-misconfig-triage",
+    "name": "Cloud Misconfig Triage",
+    "file": "workflows/cloud-misconfig-triage.json",
+    "actions": "10",
+    "env": "WEBHOOK_URL_CLOUD_MISCONFIG_TRIAGE"
+  },
+  {
+    "id": "supply-chain-scanner",
+    "name": "Supply Chain Scanner",
+    "file": "workflows/supply-chain-scanner.json",
+    "actions": "11",
+    "env": "WEBHOOK_URL_SUPPLY_CHAIN_SCANNER"
+  }
+]

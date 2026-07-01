@@ -1,0 +1,411 @@
+{
+  "schema_version": 30,
+  "standard_lib_version": 92,
+  "action_runtime_version": 83,
+  "name": "Incident Correlator",
+  "description": "Multi-signal correlation with dedup and enrichment.",
+  "guid": "38ad0b6d33ae402393e89063ab051af3",
+  "slug": "incident_correlator",
+  "agents": [
+    {
+      "type": "Agents::WebhookAgent",
+      "name": "correlate_signal",
+      "disabled": false,
+      "description": null,
+      "guid": "577a6d6e02a04839ad345390798fd173",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:38ad0b6d33ae402393e89063ab051af3",
+      "options": {
+        "path": "incident-correlator",
+        "secret": "3b00f4132d8ba75ad6c899ee2261651c",
+        "verbs": "get,post"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "normalize_input",
+      "disabled": false,
+      "description": null,
+      "guid": "ca449f7699694377b5083709c7a4c1a7",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:38ad0b6d33ae402393e89063ab051af3",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "event_id": "<<correlate_signal.body.correlation_id>>",
+          "severity": "<<correlate_signal.body.severity>>",
+          "category": "<<correlate_signal.body.category>>",
+          "received_at": "<<correlate_signal.date>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "dedupe_window",
+      "disabled": false,
+      "description": null,
+      "guid": "da1707cdb8764f4a93072d5514e73958",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:38ad0b6d33ae402393e89063ab051af3",
+      "options": {
+        "mode": "deduplicate",
+        "loop": false,
+        "payload": {},
+        "path": "<<normalize_input.event_id>>",
+        "period": 300
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "rate_limit",
+      "disabled": false,
+      "description": null,
+      "guid": "ee7bc8f4e3564bee8dde25145df4341b",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:38ad0b6d33ae402393e89063ab051af3",
+      "options": {
+        "mode": "throttle",
+        "loop": false,
+        "payload": {},
+        "capacity": 5,
+        "interval": "minute"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "external_lookup",
+      "disabled": false,
+      "description": null,
+      "guid": "55fff2d3a8a24603949561fc64a21ea1",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:38ad0b6d33ae402393e89063ab051af3",
+      "options": {
+        "url": "https://httpbin.org/post",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "event_id": "<<normalize_input.event_id>>",
+          "category": "<<normalize_input.category>>"
+        },
+        "emit_failure_event": false
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "check_severity",
+      "disabled": false,
+      "description": null,
+      "guid": "8b4e0dde855147ef8d18c71bd30ebb86",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:38ad0b6d33ae402393e89063ab051af3",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "high",
+            "path": "<<normalize_input.severity>>"
+          },
+          {
+            "type": "field==value",
+            "value": "critical",
+            "path": "<<normalize_input.severity>>"
+          }
+        ],
+        "must_match": 1
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "delay_processing",
+      "disabled": false,
+      "description": null,
+      "guid": "3657f480a2cd4867b9579c557b8f8f0b",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:38ad0b6d33ae402393e89063ab051af3",
+      "options": {
+        "mode": "delay",
+        "loop": false,
+        "payload": {},
+        "seconds": 3
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "escalate",
+      "disabled": false,
+      "description": null,
+      "guid": "283d7842dced4695be436698fcc4d60f",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:38ad0b6d33ae402393e89063ab051af3",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "escalate",
+          "event_id": "<<normalize_input.event_id>>",
+          "http_status": "<<external_lookup.status>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "standard_log",
+      "disabled": false,
+      "description": null,
+      "guid": "2fb3a7f92c2d4e3d9906144ddbbab511",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:38ad0b6d33ae402393e89063ab051af3",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "action": "log",
+          "event_id": "<<normalize_input.event_id>>",
+          "http_status": "<<external_lookup.status>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "check_http_ok",
+      "disabled": false,
+      "description": null,
+      "guid": "63ccdf87fb6b416ab68f347e2d1cc02e",
+      "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:38ad0b6d33ae402393e89063ab051af3",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "200",
+            "path": "<<external_lookup.status>>"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null,
+        "template_tags": []
+      },
+      "width": null,
+      "schedule": null
+    }
+  ],
+  "links": [
+    {
+      "source": 0,
+      "receiver": 1
+    },
+    {
+      "source": 1,
+      "receiver": 2
+    },
+    {
+      "source": 2,
+      "receiver": 3
+    },
+    {
+      "source": 3,
+      "receiver": 4
+    },
+    {
+      "source": 4,
+      "receiver": 5
+    },
+    {
+      "source": 5,
+      "receiver": 6
+    },
+    {
+      "source": 6,
+      "receiver": 9
+    },
+    {
+      "source": 9,
+      "receiver": 7
+    },
+    {
+      "source": 9,
+      "receiver": 8,
+      "link_type": "secondary"
+    }
+  ],
+  "diagram_notes": [],
+  "story_library_metadata": {},
+  "monitor_failures": false,
+  "synchronous_webhooks_enabled": false,
+  "integrations": [],
+  "sections": [],
+  "parent_only_send_to_story": false,
+  "send_to_story_timeout_enabled": false,
+  "send_to_story_timeout_duration_seconds": null,
+  "keep_events_for": 86400,
+  "reporting_status": true,
+  "send_to_story_enabled": false,
+  "entry_agent_guid": null,
+  "exit_agent_guids": [],
+  "api_entry_action_guids": [],
+  "api_exit_action_guids": [],
+  "send_to_story_access": null,
+  "send_to_story_access_source": 0,
+  "send_to_story_skill_use_requires_confirmation": true,
+  "pages": [],
+  "tags": [],
+  "time_saved_unit": "minutes",
+  "time_saved_value": 0,
+  "origin_story_identifier": "cloud:487706a2b146ec0742f27d378235fd1a:38ad0b6d33ae402393e89063ab051af3",
+  "recipients": [
+    "user@applyready.dev"
+  ],
+  "integration_product": null,
+  "integration_vendor": null,
+  "llm_product_instructions": "",
+  "start_reference": null,
+  "app_endpoints": [],
+  "send_to_stories": [],
+  "exported_at": "2026-07-01T22:37:29Z",
+  "diagram_layout": "{\"577a6d6e02a04839ad345390798fd173\": [105, 105], \"ca449f7699694377b5083709c7a4c1a7\": [375, 105], \"da1707cdb8764f4a93072d5514e73958\": [645, 105], \"ee7bc8f4e3564bee8dde25145df4341b\": [915, 105], \"55fff2d3a8a24603949561fc64a21ea1\": [105, 270], \"8b4e0dde855147ef8d18c71bd30ebb86\": [375, 270], \"3657f480a2cd4867b9579c557b8f8f0b\": [645, 270], \"283d7842dced4695be436698fcc4d60f\": [915, 270], \"2fb3a7f92c2d4e3d9906144ddbbab511\": [105, 435], \"63ccdf87fb6b416ab68f347e2d1cc02e\": [375, 435]}"
+}

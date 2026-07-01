@@ -1,0 +1,6 @@
+{
+  "event_id": "demo-insider-threat-analyzer-001",
+  "severity": "high",
+  "source": "hr",
+  "note": "Test payload for insider-threat-analyzer"
+}

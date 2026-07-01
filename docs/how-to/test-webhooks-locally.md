@@ -53,17 +53,18 @@ Expected terminal actions: `log_alert`, `escalate_alert` + enrich, `critical_esc
 
 ---
 
-## Exported-only workflows
+## Exported-only and generated workflows
 
-Each exported workflow with a webhook has a matching script:
+Standard exports and the 20 complex generated workflows each have `scripts/test-<id>.sh` and `scripts/payloads/<id>.json`:
 
 ```bash
 ./scripts/test-ip-enrichment.sh
-./scripts/test-url-reputation.sh
-# … see catalog.yaml for the full list
+./scripts/test-phishing-analyzer.sh   # complex generated example
 ```
 
-Use [`scripts/send-test-webhook-env.sh`](../../scripts/send-test-webhook-env.sh) when the catalog specifies a custom `webhook_env`.
+Full index: [Reference: Workflow catalog](../reference/workflow-catalog.md).
+
+Validate the library: `./scripts/validate-workflow-library.sh`
 
 ---
 

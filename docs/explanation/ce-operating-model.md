@@ -29,7 +29,9 @@ Exports do **not** bypass the runtime cap. They let you **swap** which three def
 | Layer | Role |
 |---|---|
 | **Tenant** | Up to three flows executing now (webhooks, schedules, etc.) |
-| **Local library** | JSON exports + `catalog.yaml` metadata + test scripts |
+| **Local library** | 29 JSON exports + `catalog.yaml` + per-workflow test scripts |
+
+![Workflow library overview](../diagrams/workflow-library-overview.drawio.png)
 
 **Swap cycle:** export (if changed) → disable in tenant → import/enable next story → update `.env` → run test script.
 
